@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>道猴章名决选</title>
+<style>
+  :root {
+    --bg-color: #0b0d14;
+    --card-bg: #141824;
+    --card-hover: #1c2236;
+    --border-color: #252e45;
+    --accent: #d4af37;
+    --accent-hover: #f1c40f;
+    --text-primary: #f8fafc;
+    --text-secondary: #94a3b8;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background-color: var(--bg-color); color: var(--text-primary);
+    min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px 16px;
+  }
+  .container { width: 100%; max-width: 920px; text-align: center; }
+  header { margin-bottom: 1.8rem; }
+  h1 { font-size: 2.2rem; color: var(--accent); letter-spacing: 2px; margin-bottom: 0.5rem; }
+  .subtitle { color: var(--text-secondary); font-size: 0.95rem; }
+  .toolbar { margin-bottom: 2rem; display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .vol-select {
+    background: var(--card-bg); color: var(--text-primary); border: 1px solid var(--accent);
+    padding: 9px 18px; border-radius: 6px; font-size: 0.95rem; outline: none; cursor: pointer;
+  }
+  .vol-select option { background: #11141d; }
+  .match-status { margin-bottom: 1.5rem; font-weight: 600; color: var(--accent); letter-spacing: 1px; font-size: 1.1rem; min-height: 1.6em; }
+  .arena { display: flex; gap: 24px; justify-content: center; align-items: stretch; position: relative; min-height: 240px; }
+  .vs-badge {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    background: var(--accent); color: #000; font-weight: 800; font-size: 0.85rem;
+    width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    z-index: 2; pointer-events: none; box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+  }
+  .card-option {
+    flex: 1; background: var(--card-bg); border: 2px solid var(--border-color); border-radius: 12px;
+    padding: 2.8rem 1.8rem; display: flex; align-items: center; justify-content: center; cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  }
+  .card-option:hover { transform: translateY(-4px); border-color: var(--accent); background: var(--card-hover); box-shadow: 0 8px 25px rgba(212, 175, 55, 0.2); }
+  .card-option.disabled { pointer-events: none; opacity: 0.6; }
+  .card-title { font-size: 1.35rem; font-weight: 600; line-height: 1.5; color: #fff; word-break: break-word; }
+  .winner-box { display: none; background: var(--card-bg); border: 2px solid var(--accent); border-radius: 14px; padding: 3rem 2rem; box-shadow: 0 0 30px rgba(212, 175, 55, 0.15); }
+  .winner-label { color: var(--text-secondary); font-size: 0.95rem; letter-spacing: 2px; }
+  .winner-name { font-size: 2.4rem; color: var(--accent); font-weight: 700; margin: 1.2rem 0; }
+  .upload-tip { font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 1.2rem; min-height: 1.5em; }
+  .btn-group { display: flex; justify-content: center; gap: 12px; margin-top: 1.8rem; flex-wrap: wrap; }
+  .btn { padding: 9px 20px; background: var(--accent); color: #000; font-weight: 600; border: none; border-radius: 6px; cursor: pointer; font-size: 0.95rem; transition: all 0.2s; }
+  .btn:hover { background: var(--accent-hover); }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-secondary { background: #252e45; color: #f8fafc; border: 1px solid var(--border-color); }
+  .btn-secondary:hover { background: #334155; }
+  .btn-danger { background: #7f1d1d; color: #fecaca; border: 1px solid #991b1b; }
+
+  .modal { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); z-index: 1000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(5px); }
+  .modal.show { display: flex; }
+  .modal-card { background: #141824; border: 1px solid var(--border-color); border-radius: 12px; width: 100%; max-width: 960px; max-height: 85vh; display: flex; flex-direction: column; padding: 24px; }
+  .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 16px; }
+  .modal-title { color: var(--accent); font-size: 1.25rem; font-weight: 600; }
+  .tab-group { display: flex; gap: 8px; background: #0b0d14; padding: 4px; border-radius: 8px; border: 1px solid var(--border-color); }
+  .tab-btn { padding: 6px 14px; border: none; background: transparent; color: var(--text-secondary); cursor: pointer; border-radius: 6px; font-size: 0.85rem; font-weight: 600; }
+  .tab-btn.active { background: var(--accent); color: #000; }
+  .close-btn { background: transparent; border: none; color: var(--text-secondary); font-size: 1.6rem; cursor: pointer; }
+  .modal-body { overflow: auto; flex: 1; text-align: left; min-height: 120px; position: relative; }
+  .modal-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 14px; margin-top: 14px; flex-wrap: wrap; gap: 10px; }
+  .stats-table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+  .stats-table th, .stats-table td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border-color); }
+  .rank-tag { display: inline-block; width: 26px; height: 26px; line-height: 26px; text-align: center; border-radius: 50%; font-weight: 700; font-size: 0.85rem; background: #252e45; color: #fff; }
+  .rank-1 { background: #d4af37; color: #000; }
+  .rank-2 { background: #94a3b8; color: #000; }
+  .rank-3 { background: #b45309; color: #fff; }
+  .vol-tag { position: relative; display: inline-block; color: #fff; padding: 3px 10px; border-radius: 10px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+  .vol-tag .vol-badge {
+    position: absolute; top: -8px; right: -8px; background: #fff; width: 16px; height: 16px;
+    border-radius: 50%; font-size: 10px; font-weight: bold; display: flex; align-items: center;
+    justify-content: center; box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+  }
+  .elo-badge { font-weight: 700; }
+  .elo-up { color: #22c55e; }
+  .elo-mid { color: var(--accent); }
+  .tree-container { display: flex; gap: 20px; padding: 10px 4px; min-width: max-content; }
+  .tree-round { min-width: 220px; display: flex; flex-direction: column; }
+  .tree-round-header { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 12px; text-align: center; padding-bottom: 6px; border-bottom: 1px solid var(--border-color); }
+  .tree-matches { display: flex; flex-direction: column; justify-content: space-around; flex: 1; gap: 12px; }
+  .match-node { background: #1a2030; border: 1px solid var(--border-color); border-radius: 6px; padding: 8px 10px; display: flex; flex-direction: column; gap: 4px; }
+  .node-item { font-size: 0.85rem; padding: 4px 6px; border-radius: 4px; color: #64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .node-item.winner { color: #f8fafc; background: rgba(212, 175, 55, 0.15); font-weight: 600; border-left: 3px solid var(--accent); }
+  .loading-spin {
+    display: inline-block; width: 16px; height: 16px; border: 2px solid var(--border-color);
+    border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 6px; vertical-align: middle;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .sync-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+  .sync-ok { background: #22c55e; }
+  .sync-err { background: #ef4444; }
+  .warn-icon { font-size: 2.6rem; margin-bottom: 0.8rem; }
+  .warn-text { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.8; text-align: left; }
+  .warn-text b { color: var(--accent); }
+  .export-disabled-tip { font-size: 0.85rem; color: var(--text-secondary); background: #1a2030; padding: 8px 14px; border-radius: 6px; border: 1px solid var(--border-color); }
+  @media (max-width: 640px) { .arena { flex-direction: column; } .vs-badge { display: none; } }
+</style>
+</head>
+<body>
+
+<div class="container">
+<header>
+  <h1>道猴章名决选</h1>
+  <p class="subtitle">选出你心目中最喜爱的章节名</p>
+</header>
+
+<div class="toolbar">
+  <label for="vol-select" style="color: var(--text-secondary); font-size: 0.95rem;">决选范围：</label>
+  <select id="vol-select" class="vol-select" onchange="onVolChange()">
+    <option value="1">第一卷 (13章)</option>
+    <option value="2">第二卷 (21章)</option>
+    <option value="3">第三卷 (32章)</option>
+    <option value="4">第四卷 (42章)</option>
+    <option value="5">第五卷 (51章)</option>
+    <option value="6">第六卷 (63章)</option>
+    <option value="7">第七卷 (70章)</option>
+    <option value="all">全卷(共266章)</option>
+  </select>
+  <button class="btn btn-secondary" onclick="openStatsModal()">查看全网天梯排行榜</button>
+</div>
+
+<div id="game-view">
+  <div class="match-status" id="match-status">准备就绪</div>
+  <div class="arena">
+    <div class="vs-badge">VS</div>
+    <div class="card-option" id="card-a" onclick="pickWinner(0)"><div class="card-title" id="title-a"></div></div>
+    <div class="card-option" id="card-b" onclick="pickWinner(1)"><div class="card-title" id="title-b"></div></div>
+  </div>
+</div>
+
+<div id="winner-view" class="winner-box">
+  <div class="winner-label">最终裁定章名</div>
+  <div class="winner-name" id="final-champion"></div>
+  <div class="upload-tip" id="upload-status">决选结束！点击下方按钮将结果同步到全网</div>
+  <div class="btn-group">
+    <button class="btn" onclick="restart()">重新洗牌决选</button>
+    <button class="btn btn-secondary" onclick="openTreeModal()">查看决选路线图</button>
+    <button class="btn btn-secondary" onclick="openStatsModal()">查看全网天梯排行榜</button>
+    <button class="btn" id="record-btn" onclick="recordToLeaderboard()">一键同步到全网排行榜</button>
+  </div>
+</div>
+</div>
+
+<!-- 全卷模式开始前警告弹窗 -->
+<div class="modal" id="all-warning-modal">
+<div class="modal-card" style="max-width: 480px;">
+  <div class="modal-header">
+    <div class="modal-title">⚠️ 开始前请注意</div>
+  </div>
+  <div class="modal-body" style="text-align: center;">
+    <div class="warn-icon">🏆</div>
+    <p class="warn-text">
+      你即将挑战 <b>全卷章名（共266章）</b>，这是最硬核的决选模式：<br><br>
+      · 需要经过约 <b>9 轮</b>连续两两对决才能决出最终冠军<br>
+      · 由于轮次与节点数量过多，<b>完成后将不提供"路线图高清导出"功能</b>，仅支持在线查看<br>
+      · 建议预留充足时间，耐心完成整个决选流程
+    </p>
+  </div>
+  <div class="modal-footer" style="justify-content: center;">
+    <button class="btn btn-secondary" onclick="cancelAllMode()">取消，返回选择</button>
+    <button class="btn" onclick="confirmAllMode()">我已知悉，开始挑战</button>
+  </div>
+</div>
+</div>
+
+<!-- 路线图弹窗 -->
+<div class="modal" id="tree-modal" onclick="onModalBgClick(event, 'tree-modal')">
+<div class="modal-card">
+  <div class="modal-header">
+    <div class="modal-title">决选晋级路线图</div>
+    <div style="display:flex; gap:12px; align-items:center;">
+      <span class="export-disabled-tip" id="export-disabled-tip" style="display:none;">全卷模式暂不支持导出</span>
+      <button class="btn" id="export-tree-btn" style="padding: 6px 14px; font-size: 0.85rem;" onclick="exportTreeAsImage()">导出高清图</button>
+      <button class="close-btn" onclick="closeModal('tree-modal')">&times;</button>
+    </div>
+  </div>
+  <div class="modal-body"><div class="tree-container" id="tree-container"></div></div>
+</div>
+</div>
+
+<!-- 天梯排行榜弹窗 -->
+<div class="modal" id="stats-modal" onclick="onModalBgClick(event, 'stats-modal')">
+<div class="modal-card">
+  <div class="modal-header" style="flex-wrap: wrap; gap: 10px;">
+    <div style="display: flex; align-items: center; gap: 14px;">
+      <div class="modal-title">全网天梯排行榜</div>
+      <div class="tab-group">
+        <button class="tab-btn active" id="tab-champ" onclick="switchTab('champion')">桂冠夺冠榜</button>
+        <button class="tab-btn" id="tab-fav" onclick="switchTab('favorite')">喜爱度积分榜</button>
+      </div>
+    </div>
+    <button class="close-btn" onclick="closeModal('stats-modal')">&times;</button>
+  </div>
+  <div class="modal-body">
+    <table class="stats-table">
+      <thead id="stats-thead"></thead>
+      <tbody id="stats-tbody"></tbody>
+    </table>
+  </div>
+  <div class="modal-footer">
+    <span style="font-size: 0.85rem; color: var(--text-secondary);" id="sync-indicator">
+      <span class="loading-spin"></span>连接中...
+    </span>
+    <div style="display: flex; gap: 8px;">
+      <button class="btn btn-secondary" style="font-size: 0.8rem; padding: 6px 12px;" onclick="openStatsModal()">刷新数据</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- 外部引入独立章名文件 + Supabase 客户端 -->
+<script src="./chapters.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+// === Supabase 云端连接配置 ===
+const SUPABASE_URL = 'https://vkjgwaqzuqeuudlraecv.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_NsBfdtzlrU2wX9oYZ8S4RA_b1-JKxKQ';
+let supabaseClient = null;
+try {
+  supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+} catch (e) {
+  console.error('Supabase 初始化失败', e);
+}
+
+// === 所属卷映射配置（卷主题名 + 配色）===
+const VOLUME_NAMES = {
+  "1": "星云遥梦之始",
+  "2": "千门万户之都",
+  "3": "群虫众豸之母",
+  "4": "颠倒错杂之歌",
+  "5": "永生不败之光",
+  "6": "至瑰极宏之愿",
+  "7": "朝来暮去之雨"
+};
+const VOLUME_COLORS = {
+  "1": "#e74c3c",
+  "2": "#e67e22",
+  "3": "#f1c40f",
+  "4": "#2ecc71",
+  "5": "#1abc9c",
+  "6": "#3498db",
+  "7": "#9b59b6"
+};
+
+function buildChapterVolumeMap() {
+  const map = {};
+  if (!window.CHAPTERS_BY_VOL) return map;
+  for (let i = 1; i <= 7; i++) {
+    const list = window.CHAPTERS_BY_VOL[String(i)] || [];
+    list.forEach(name => { map[name] = String(i); });
+  }
+  return map;
+}
+const chapterVolumeMap = buildChapterVolumeMap();
+
+// 生成"卷名 + 数字角标"的标签HTML
+function renderVolTag(chapterName) {
+  const volKey = chapterVolumeMap[chapterName];
+  if (!volKey) return `<span style="color:var(--text-secondary); font-size:12px;">未知</span>`;
+  const color = VOLUME_COLORS[volKey] || '#888';
+  const name = VOLUME_NAMES[volKey] || '未知';
+  return `<span class="vol-tag" style="background:${color};">${name}<span class="vol-badge" style="color:${color};">${volKey}</span></span>`;
+}
+
+let currentRoundCandidates = [];
+let nextRoundWinners = [];
+let currentMatchIndex = 0;
+let roundNumber = 1;
+let finalChampionName = '';
+let tournamentTree = [];
+let roundMatches = [];
+let hasVotedThisGame = false;
+let currentTab = 'champion';
+let statsStore = { champions: {}, matches: {} };
+let isCloudConnected = false;
+let isAllMode = false;
+let previousVolValue = '1';
+
+function getChaptersForVol(vol) {
+  if (!window.CHAPTERS_BY_VOL) return [];
+  if (vol === 'all') {
+    let all = [];
+    for (let i = 1; i <= 7; i++) all = all.concat(window.CHAPTERS_BY_VOL[String(i)] || []);
+    return all;
+  }
+  return window.CHAPTERS_BY_VOL[vol] || [];
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function onVolChange() {
+  const vol = document.getElementById('vol-select').value;
+  if (vol === 'all') {
+    document.getElementById('all-warning-modal').classList.add('show');
+    return;
+  }
+  previousVolValue = vol;
+  isAllMode = false;
+  startTournament(getChaptersForVol(vol));
+}
+
+function confirmAllMode() {
+  document.getElementById('all-warning-modal').classList.remove('show');
+  previousVolValue = 'all';
+  isAllMode = true;
+  startTournament(getChaptersForVol('all'));
+}
+
+function cancelAllMode() {
+  document.getElementById('all-warning-modal').classList.remove('show');
+  document.getElementById('vol-select').value = previousVolValue;
+}
+
+function startTournament(pool) {
+  tournamentTree = [];
+  roundMatches = [];
+  currentRoundCandidates = shuffle(pool);
+  nextRoundWinners = [];
+  currentMatchIndex = 0;
+  roundNumber = 1;
+  finalChampionName = '';
+  hasVotedThisGame = false;
+
+  const recordBtn = document.getElementById('record-btn');
+  recordBtn.disabled = false;
+  recordBtn.innerText = '一键同步到全网排行榜';
+  recordBtn.style.background = 'var(--accent)';
+
+  document.getElementById('winner-view').style.display = 'none';
+  document.getElementById('game-view').style.display = 'block';
+  renderMatch();
+}
+
+function renderMatch() {
+  if (currentMatchIndex >= currentRoundCandidates.length) {
+    tournamentTree.push(roundMatches);
+    roundMatches = [];
+    currentRoundCandidates = nextRoundWinners;
+    nextRoundWinners = [];
+    currentMatchIndex = 0;
+    roundNumber++;
+  }
+
+  if (currentRoundCandidates.length === 1) {
+    showChampion(currentRoundCandidates[0]);
+    return;
+  }
+
+  if (currentMatchIndex === currentRoundCandidates.length - 1) {
+    const bye = currentRoundCandidates[currentMatchIndex];
+    nextRoundWinners.push(bye);
+    roundMatches.push({ a: bye, b: '轮空', winner: bye, bye: true });
+    currentMatchIndex++;
+    renderMatch();
+    return;
+  }
+
+  const itemA = currentRoundCandidates[currentMatchIndex];
+  const itemB = currentRoundCandidates[currentMatchIndex + 1];
+
+  document.getElementById('title-a').innerText = itemA;
+  document.getElementById('title-b').innerText = itemB;
+  const totalMatches = Math.ceil(currentRoundCandidates.length / 2);
+  const currentMatch = Math.floor(currentMatchIndex / 2) + 1;
+  document.getElementById('match-status').innerText = `第 ${roundNumber} 轮 · 对决 (${currentMatch}/${totalMatches})`;
+}
+
+async function pickWinner(index) {
+  const itemA = currentRoundCandidates[currentMatchIndex];
+  const itemB = currentRoundCandidates[currentMatchIndex + 1];
+  const winner = index === 0 ? itemA : itemB;
+  const loser = index === 0 ? itemB : itemA;
+
+  // 立即跳转下一场，不阻塞用户操作
+  roundMatches.push({ a: itemA, b: itemB, winner: winner });
+  nextRoundWinners.push(winner);
+  currentMatchIndex += 2;
+  renderMatch();
+
+  // 后台异步写入云端（原子操作：自增胜负场次 + 更新ELO分数）
+  if (supabaseClient) {
+    supabaseClient.rpc('increment_match', {
+      winner_title: winner,
+      loser_title: loser
+    }).then(({ error }) => {
+      if (error) console.error('写入对决数据失败', error);
+    });
+  }
+}
+
+function showChampion(championName) {
+  finalChampionName = championName;
+  document.getElementById('game-view').style.display = 'none';
+  document.getElementById('winner-view').style.display = 'block';
+  document.getElementById('final-champion').innerText = championName;
+  document.getElementById('upload-status').innerText = '决选结束！点击下方按钮将结果同步到全网';
+}
+
+async function recordToLeaderboard() {
+  if (!finalChampionName || hasVotedThisGame) return;
+  hasVotedThisGame = true;
+
+  const recordBtn = document.getElementById('record-btn');
+  recordBtn.disabled = true;
+  recordBtn.innerText = '同步中...';
+
+  if (supabaseClient) {
+    const { error } = await supabaseClient.rpc('increment_champion', {
+      champ_title: finalChampionName
+    });
+    if (error) {
+      recordBtn.innerText = '同步失败，点击重试';
+      recordBtn.disabled = false;
+      hasVotedThisGame = false;
+      document.getElementById('upload-status').innerText = '⚠️ 网络异常，未能同步，请重试';
+      console.error(error);
+      return;
+    }
+  }
+
+  recordBtn.innerText = '已成功同步到全网';
+  recordBtn.style.background = '#252e45';
+  document.getElementById('upload-status').innerText = `《${finalChampionName}》已成功计入全网排行榜！`;
+}
+
+async function fetchCloudStats() {
+  const indicator = document.getElementById('sync-indicator');
+  indicator.innerHTML = '<span class="loading-spin"></span>正在同步云端数据...';
+
+  if (!supabaseClient) {
+    indicator.innerHTML = '<span class="sync-dot sync-err"></span>云端客户端未初始化';
+    isCloudConnected = false;
+    return;
+  }
+
+  try {
+    const { data, error } = await supabaseClient
+      .from('daohou_leaderboard')
+      .select('*');
+
+    if (error) throw error;
+
+    statsStore = { champions: {}, matches: {} };
+    (data || []).forEach(row => {
+      statsStore.champions[row.title] = row.champion_count || 0;
+      statsStore.matches[row.title] = {
+        win: row.win_count || 0,
+        total: row.total_count || 0,
+        elo: row.elo_score || 1500
+      };
+    });
+
+    isCloudConnected = true;
+    indicator.innerHTML = '<span class="sync-dot sync-ok"></span>已连接全网云端数据库';
+  } catch (e) {
+    console.error('拉取云端数据失败', e);
+    isCloudConnected = false;
+    indicator.innerHTML = '<span class="sync-dot sync-err"></span>网络异常，暂时无法同步';
+  }
+}
+
+function switchTab(type) {
+  currentTab = type;
+  document.getElementById('tab-champ').classList.toggle('active', type === 'champion');
+  document.getElementById('tab-fav').classList.toggle('active', type === 'favorite');
+  renderStatsTable();
+}
+
+async function openStatsModal() {
+  document.getElementById('stats-modal').classList.add('show');
+  await fetchCloudStats();
+  renderStatsTable();
+}
+
+function renderStatsTable() {
+  const thead = document.getElementById('stats-thead');
+  const tbody = document.getElementById('stats-tbody');
+  tbody.innerHTML = '';
+
+  if (currentTab === 'champion') {
+    thead.innerHTML = `<tr><th style="width: 70px;">排名</th><th>章节名</th><th style="width: 150px;">所属卷</th><th style="width: 130px; text-align: right;">夺冠总次数</th></tr>`;
+    const entries = Object.entries(statsStore.champions || {}).filter(([_, v]) => v > 0);
+    if (entries.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color: var(--text-secondary); padding: 24px;">暂无夺冠数据，完成决选并点击同步即可上榜！</td></tr>`;
+      return;
+    }
+    entries.sort((a, b) => b[1] - a[1]);
+    entries.forEach(([title, count], idx) => {
+      const tr = document.createElement('tr');
+      const rankClass = idx === 0 ? 'rank-1' : idx === 1 ? 'rank-2' : idx === 2 ? 'rank-3' : '';
+      tr.innerHTML = `<td><span class="rank-tag ${rankClass}">${idx + 1}</span></td><td style="color:#fff;">${title}</td><td>${renderVolTag(title)}</td><td style="color:var(--accent); font-weight:700; text-align:right;">${count} 次</td>`;
+      tbody.appendChild(tr);
+    });
+  } else {
+    // 喜爱度积分榜：基于ELO动态评分系统，由云端数据库实时计算维护
+    thead.innerHTML = `<tr><th style="width: 70px;">排名</th><th>章节名</th><th style="width: 150px;">所属卷</th><th style="width: 100px; text-align: center;">胜/负</th><th style="width: 90px; text-align: center;">胜率</th><th style="width: 110px; text-align: right;">ELO积分</th></tr>`;
+    const entries = Object.entries(statsStore.matches || {});
+    if (entries.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color: var(--text-secondary); padding: 24px;">暂无对决数据，完成两两对决即可累加ELO积分！</td></tr>`;
+      return;
+    }
+    const list = entries.map(([title, st]) => {
+      const rate = st.total > 0 ? (st.win / st.total) : 0;
+      return { title, win: st.win, loss: st.total - st.win, rate: (rate * 100).toFixed(1), elo: st.elo };
+    });
+    // 按ELO降序排序，ELO是全局统一分数，天然兼容不同卷之间的基数差异
+    list.sort((a, b) => b.elo - a.elo);
+    list.forEach((item, idx) => {
+      const tr = document.createElement('tr');
+      const rankClass = idx === 0 ? 'rank-1' : idx === 1 ? 'rank-2' : idx === 2 ? 'rank-3' : '';
+      const eloColorClass = item.elo >= 1600 ? 'elo-up' : 'elo-mid';
+      tr.innerHTML = `<td><span class="rank-tag ${rankClass}">${idx + 1}</span></td><td style="color:#fff;">${item.title}</td><td>${renderVolTag(item.title)}</td><td style="color:var(--text-secondary); font-size:0.85rem; text-align:center;">${item.win}胜/${item.loss}负</td><td style="color:#e2e8f0; text-align:center;">${item.rate}%</td><td class="elo-badge ${eloColorClass}" style="text-align:right;">${item.elo}</td>`;
+      tbody.appendChild(tr);
+    });
+  }
+}
+
+function openTreeModal() {
+  const container = document.getElementById('tree-container');
+  container.innerHTML = '';
+  tournamentTree.forEach((round, rIndex) => {
+    const roundEl = document.createElement('div');
+    roundEl.className = 'tree-round';
+    const isFinal = rIndex === tournamentTree.length - 1;
+    let title = isFinal ? '决赛' : `第 ${rIndex + 1} 轮`;
+    roundEl.innerHTML = `<div class="tree-round-header">${title}</div>`;
+    const matchesEl = document.createElement('div');
+    matchesEl.className = 'tree-matches';
+    round.forEach(m => {
+      const matchNode = document.createElement('div');
+      matchNode.className = 'match-node';
+      matchNode.innerHTML = `
+        <div class="node-item ${m.winner === m.a ? 'winner' : ''}">${m.a}</div>
+        <div class="node-item ${m.winner === m.b ? 'winner' : ''}">${m.b}</div>
+      `;
+      matchesEl.appendChild(matchNode);
+    });
+    roundEl.appendChild(matchesEl);
+    container.appendChild(roundEl);
+  });
+
+  // 全卷模式屏蔽导出功能
+  const exportBtn = document.getElementById('export-tree-btn');
+  const disabledTip = document.getElementById('export-disabled-tip');
+  if (isAllMode) {
+    exportBtn.style.display = 'none';
+    disabledTip.style.display = 'inline-block';
+  } else {
+    exportBtn.style.display = 'inline-block';
+    disabledTip.style.display = 'none';
+  }
+
+  document.getElementById('tree-modal').classList.add('show');
+}
+
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+function onModalBgClick(e, id) { if (e.target.id === id) closeModal(id); }
+function restart() { onVolChange(); }
+
+function exportTreeAsImage() {
+  if (isAllMode) return; // 全卷模式禁止导出
+  if (!tournamentTree || tournamentTree.length === 0) return;
+  const colWidth = 240, colGap = 40, cardHeight = 68, paddingX = 40, paddingTop = 120, paddingBottom = 40;
+  let maxMatches = 1;
+  tournamentTree.forEach(r => { if (r.length > maxMatches) maxMatches = r.length; });
+  const totalWidth = paddingX * 2 + tournamentTree.length * colWidth + (tournamentTree.length - 1) * colGap;
+  const availableHeight = Math.max(maxMatches * 85, 480);
+  const totalHeight = paddingTop + availableHeight + paddingBottom;
+
+  const canvas = document.createElement('canvas');
+  const dpr = window.devicePixelRatio || 2;
+  canvas.width = totalWidth * dpr; canvas.height = totalHeight * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+
+  ctx.fillStyle = '#0b0d14'; ctx.fillRect(0, 0, totalWidth, totalHeight);
+  ctx.fillStyle = '#d4af37'; ctx.font = 'bold 24px sans-serif';
+  ctx.fillText('道猴章名决选路线图', paddingX, 48);
+
+  tournamentTree.forEach((round, colIndex) => {
+    const x = paddingX + colIndex * (colWidth + colGap);
+    const slotHeight = availableHeight / round.length;
+    round.forEach((m, mIndex) => {
+      const y = paddingTop + mIndex * slotHeight + (slotHeight - cardHeight) / 2;
+      ctx.fillStyle = '#141824'; ctx.fillRect(x, y, colWidth, cardHeight);
+      ctx.strokeStyle = '#252e45'; ctx.strokeRect(x, y, colWidth, cardHeight);
+      ctx.fillStyle = m.winner === m.a ? '#d4af37' : '#94a3b8';
+      ctx.font = '12px sans-serif';
+      ctx.fillText(m.a.slice(0, 14), x + 8, y + 24);
+      ctx.fillStyle = m.winner === m.b ? '#d4af37' : '#94a3b8';
+      ctx.fillText(m.b.slice(0, 14), x + 8, y + 50);
+    });
+  });
+
+  const link = document.createElement('a');
+  link.download = `道猴章名决选路线图_${Date.now()}.png`;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
+window.onload = onVolChange;
+</script>
+</body>
+</html>
