@@ -45,6 +45,7 @@
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
   }
   .card-option:hover { transform: translateY(-4px); border-color: var(--accent); background: var(--card-hover); box-shadow: 0 8px 25px rgba(212, 175, 55, 0.2); }
+  .card-option.disabled { pointer-events: none; opacity: 0.6; }
   .card-title { font-size: 1.35rem; font-weight: 600; line-height: 1.5; color: #fff; word-break: break-word; }
   .winner-box { display: none; background: var(--card-bg); border: 2px solid var(--accent); border-radius: 14px; padding: 3rem 2rem; box-shadow: 0 0 30px rgba(212, 175, 55, 0.15); }
   .winner-label { color: var(--text-secondary); font-size: 0.95rem; letter-spacing: 2px; }
@@ -53,10 +54,11 @@
   .btn-group { display: flex; justify-content: center; gap: 12px; margin-top: 1.8rem; flex-wrap: wrap; }
   .btn { padding: 9px 20px; background: var(--accent); color: #000; font-weight: 600; border: none; border-radius: 6px; cursor: pointer; font-size: 0.95rem; transition: all 0.2s; }
   .btn:hover { background: var(--accent-hover); }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
   .btn-secondary { background: #252e45; color: #f8fafc; border: 1px solid var(--border-color); }
   .btn-secondary:hover { background: #334155; }
   .btn-danger { background: #7f1d1d; color: #fecaca; border: 1px solid #991b1b; }
-  
+
   .modal { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); z-index: 1000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(5px); }
   .modal.show { display: flex; }
   .modal-card { background: #141824; border: 1px solid var(--border-color); border-radius: 12px; width: 100%; max-width: 960px; max-height: 85vh; display: flex; flex-direction: column; padding: 24px; }
@@ -66,7 +68,7 @@
   .tab-btn { padding: 6px 14px; border: none; background: transparent; color: var(--text-secondary); cursor: pointer; border-radius: 6px; font-size: 0.85rem; font-weight: 600; }
   .tab-btn.active { background: var(--accent); color: #000; }
   .close-btn { background: transparent; border: none; color: var(--text-secondary); font-size: 1.6rem; cursor: pointer; }
-  .modal-body { overflow: auto; flex: 1; text-align: left; }
+  .modal-body { overflow: auto; flex: 1; text-align: left; min-height: 120px; position: relative; }
   .modal-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 14px; margin-top: 14px; flex-wrap: wrap; gap: 10px; }
   .stats-table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
   .stats-table th, .stats-table td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border-color); }
@@ -81,6 +83,14 @@
   .match-node { background: #1a2030; border: 1px solid var(--border-color); border-radius: 6px; padding: 8px 10px; display: flex; flex-direction: column; gap: 4px; }
   .node-item { font-size: 0.85rem; padding: 4px 6px; border-radius: 4px; color: #64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .node-item.winner { color: #f8fafc; background: rgba(212, 175, 55, 0.15); font-weight: 600; border-left: 3px solid var(--accent); }
+  .loading-spin {
+    display: inline-block; width: 16px; height: 16px; border: 2px solid var(--border-color);
+    border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 6px; vertical-align: middle;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .sync-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+  .sync-ok { background: #22c55e; }
+  .sync-err { background: #ef4444; }
   @media (max-width: 640px) { .arena { flex-direction: column; } .vs-badge { display: none; } }
 </style>
 </head>
@@ -89,7 +99,7 @@
 <div class="container">
 <header>
   <h1>道猴章名决选</h1>
-  <p class="subtitle">遵从直觉，选出你心目中最具神韵的章节名</p>
+  <p class="subtitle">遵从直觉，选出你心目中最具神韵的章节名 · 全网实时同步</p>
 </header>
 
 <div class="toolbar">
@@ -104,27 +114,27 @@
     <option value="7">第七卷 (70章)</option>
     <option value="all">全卷巅峰大乱斗 (共266章)</option>
   </select>
-  <button class="btn btn-secondary" onclick="openStatsModal()">查看天梯排行榜</button>
+  <button class="btn btn-secondary" onclick="openStatsModal()">查看全网天梯排行榜</button>
 </div>
 
 <div id="game-view">
   <div class="match-status" id="match-status">准备就绪</div>
   <div class="arena">
     <div class="vs-badge">VS</div>
-    <div class="card-option" onclick="pickWinner(0)"><div class="card-title" id="title-a"></div></div>
-    <div class="card-option" onclick="pickWinner(1)"><div class="card-title" id="title-b"></div></div>
+    <div class="card-option" id="card-a" onclick="pickWinner(0)"><div class="card-title" id="title-a"></div></div>
+    <div class="card-option" id="card-b" onclick="pickWinner(1)"><div class="card-title" id="title-b"></div></div>
   </div>
 </div>
 
 <div id="winner-view" class="winner-box">
   <div class="winner-label">最终裁定章名</div>
   <div class="winner-name" id="final-champion"></div>
-  <div class="upload-tip" id="upload-status">已决选出该卷桂冠</div>
+  <div class="upload-tip" id="upload-status">决选结束！点击下方按钮将结果同步到全网</div>
   <div class="btn-group">
     <button class="btn" onclick="restart()">重新洗牌决选</button>
     <button class="btn btn-secondary" onclick="openTreeModal()">查看决选路线图</button>
-    <button class="btn btn-secondary" onclick="openStatsModal()">查看天梯排行榜</button>
-    <button class="btn" id="record-btn" onclick="recordToLeaderboard()">计入排行榜</button>
+    <button class="btn btn-secondary" onclick="openStatsModal()">查看全网天梯排行榜</button>
+    <button class="btn" id="record-btn" onclick="recordToLeaderboard()">一键同步到全网排行榜</button>
   </div>
 </div>
 </div>
@@ -148,7 +158,7 @@
 <div class="modal-card">
   <div class="modal-header" style="flex-wrap: wrap; gap: 10px;">
     <div style="display: flex; align-items: center; gap: 14px;">
-      <div class="modal-title">天梯排行榜</div>
+      <div class="modal-title">全网天梯排行榜</div>
       <div class="tab-group">
         <button class="tab-btn active" id="tab-champ" onclick="switchTab('champion')">桂冠夺冠榜</button>
         <button class="tab-btn" id="tab-fav" onclick="switchTab('favorite')">喜爱度积分榜</button>
@@ -163,20 +173,31 @@
     </table>
   </div>
   <div class="modal-footer">
-    <span style="font-size: 0.8rem; color: var(--text-secondary);">支持导出同步码，在任意手机或电脑之间无缝同步</span>
+    <span style="font-size: 0.85rem; color: var(--text-secondary);" id="sync-indicator">
+      <span class="loading-spin"></span>连接中...
+    </span>
     <div style="display: flex; gap: 8px;">
-      <button class="btn btn-secondary" style="font-size: 0.8rem; padding: 6px 12px;" onclick="exportSyncCode()">导出数据</button>
-      <button class="btn btn-secondary" style="font-size: 0.8rem; padding: 6px 12px;" onclick="importSyncCode()">导入数据</button>
-      <button class="btn btn-danger" style="font-size: 0.8rem; padding: 6px 12px;" onclick="clearAllData()">清空</button>
+      <button class="btn btn-secondary" style="font-size: 0.8rem; padding: 6px 12px;" onclick="openStatsModal()">刷新数据</button>
     </div>
   </div>
 </div>
 </div>
 
-<!-- 外部引入独立章名文件 -->
+<!-- 外部引入独立章名文件 + Supabase 客户端 -->
 <script src="./chapters.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
+// === Supabase 云端连接配置 ===
+const SUPABASE_URL = 'https://vkjgwaqzuqeuudlraecv.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_NsBfdtzlrU2wX9oYZ8S4RA_b1-JKxKQ';
+let supabaseClient = null;
+try {
+  supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+} catch (e) {
+  console.error('Supabase 初始化失败', e);
+}
+
 let currentRoundCandidates = [];
 let nextRoundWinners = [];
 let currentMatchIndex = 0;
@@ -186,12 +207,8 @@ let tournamentTree = [];
 let roundMatches = [];
 let hasVotedThisGame = false;
 let currentTab = 'champion';
-
-let statsStore = JSON.parse(localStorage.getItem('daohou_stats_store') || '{"champions":{}, "matches":{}}');
-
-function saveStore() {
-  localStorage.setItem('daohou_stats_store', JSON.stringify(statsStore));
-}
+let statsStore = { champions: {}, matches: {} };
+let isCloudConnected = false;
 
 function getChaptersForVol(vol) {
   if (!window.CHAPTERS_BY_VOL) return [];
@@ -229,7 +246,7 @@ function startTournament(pool) {
 
   const recordBtn = document.getElementById('record-btn');
   recordBtn.disabled = false;
-  recordBtn.innerText = '计入排行榜';
+  recordBtn.innerText = '一键同步到全网排行榜';
   recordBtn.style.background = 'var(--accent)';
 
   document.getElementById('winner-view').style.display = 'none';
@@ -271,23 +288,27 @@ function renderMatch() {
   document.getElementById('match-status').innerText = `第 ${roundNumber} 轮 · 对决 (${currentMatch}/${totalMatches})`;
 }
 
-function pickWinner(index) {
+async function pickWinner(index) {
   const itemA = currentRoundCandidates[currentMatchIndex];
   const itemB = currentRoundCandidates[currentMatchIndex + 1];
   const winner = index === 0 ? itemA : itemB;
   const loser = index === 0 ? itemB : itemA;
 
-  if (!statsStore.matches[winner]) statsStore.matches[winner] = { win: 0, total: 0 };
-  if (!statsStore.matches[loser]) statsStore.matches[loser] = { win: 0, total: 0 };
-  statsStore.matches[winner].win += 1;
-  statsStore.matches[winner].total += 1;
-  statsStore.matches[loser].total += 1;
-  saveStore();
-
+  // 立即跳转下一场，不阻塞用户操作
   roundMatches.push({ a: itemA, b: itemB, winner: winner });
   nextRoundWinners.push(winner);
   currentMatchIndex += 2;
   renderMatch();
+
+  // 后台异步写入云端（原子自增，不会丢数据）
+  if (supabaseClient) {
+    supabaseClient.rpc('increment_match', {
+      winner_title: winner,
+      loser_title: loser
+    }).then(({ error }) => {
+      if (error) console.error('写入对决数据失败', error);
+    });
+  }
 }
 
 function showChampion(championName) {
@@ -295,20 +316,66 @@ function showChampion(championName) {
   document.getElementById('game-view').style.display = 'none';
   document.getElementById('winner-view').style.display = 'block';
   document.getElementById('final-champion').innerText = championName;
-  document.getElementById('upload-status').innerText = '决选结束！点击下方按钮将结果计入排行榜';
+  document.getElementById('upload-status').innerText = '决选结束！点击下方按钮将结果同步到全网';
 }
 
-function recordToLeaderboard() {
+async function recordToLeaderboard() {
   if (!finalChampionName || hasVotedThisGame) return;
-  statsStore.champions[finalChampionName] = (statsStore.champions[finalChampionName] || 0) + 1;
-  saveStore();
   hasVotedThisGame = true;
 
   const recordBtn = document.getElementById('record-btn');
   recordBtn.disabled = true;
-  recordBtn.innerText = '已成功计入榜单';
+  recordBtn.innerText = '同步中...';
+
+  if (supabaseClient) {
+    const { error } = await supabaseClient.rpc('increment_champion', {
+      champ_title: finalChampionName
+    });
+    if (error) {
+      recordBtn.innerText = '同步失败，点击重试';
+      recordBtn.disabled = false;
+      hasVotedThisGame = false;
+      document.getElementById('upload-status').innerText = '⚠️ 网络异常，未能同步，请重试';
+      console.error(error);
+      return;
+    }
+  }
+
+  recordBtn.innerText = '已成功同步到全网';
   recordBtn.style.background = '#252e45';
-  document.getElementById('upload-status').innerText = `《${finalChampionName}》已累计获冠 ${statsStore.champions[finalChampionName]} 次！`;
+  document.getElementById('upload-status').innerText = `《${finalChampionName}》已成功计入全网排行榜！`;
+}
+
+async function fetchCloudStats() {
+  const indicator = document.getElementById('sync-indicator');
+  indicator.innerHTML = '<span class="loading-spin"></span>正在同步云端数据...';
+
+  if (!supabaseClient) {
+    indicator.innerHTML = '<span class="sync-dot sync-err"></span>云端客户端未初始化';
+    isCloudConnected = false;
+    return;
+  }
+
+  try {
+    const { data, error } = await supabaseClient
+      .from('daohou_leaderboard')
+      .select('*');
+
+    if (error) throw error;
+
+    statsStore = { champions: {}, matches: {} };
+    (data || []).forEach(row => {
+      statsStore.champions[row.title] = row.champion_count || 0;
+      statsStore.matches[row.title] = { win: row.win_count || 0, total: row.total_count || 0 };
+    });
+
+    isCloudConnected = true;
+    indicator.innerHTML = '<span class="sync-dot sync-ok"></span>已连接全网云端数据库';
+  } catch (e) {
+    console.error('拉取云端数据失败', e);
+    isCloudConnected = false;
+    indicator.innerHTML = '<span class="sync-dot sync-err"></span>网络异常，暂时无法同步';
+  }
 }
 
 function switchTab(type) {
@@ -318,8 +385,9 @@ function switchTab(type) {
   renderStatsTable();
 }
 
-function openStatsModal() {
+async function openStatsModal() {
   document.getElementById('stats-modal').classList.add('show');
+  await fetchCloudStats();
   renderStatsTable();
 }
 
@@ -330,9 +398,9 @@ function renderStatsTable() {
 
   if (currentTab === 'champion') {
     thead.innerHTML = `<tr><th style="width: 70px;">排名</th><th>章节名</th><th style="width: 130px; text-align: right;">夺冠总次数</th></tr>`;
-    const entries = Object.entries(statsStore.champions || {});
+    const entries = Object.entries(statsStore.champions || {}).filter(([_, v]) => v > 0);
     if (entries.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color: var(--text-secondary); padding: 24px;">暂无夺冠数据，完成决选并点击计入即可上榜！</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color: var(--text-secondary); padding: 24px;">暂无夺冠数据，完成决选并点击同步即可上榜！</td></tr>`;
       return;
     }
     entries.sort((a, b) => b[1] - a[1]);
@@ -346,7 +414,7 @@ function renderStatsTable() {
     thead.innerHTML = `<tr><th style="width: 70px;">排名</th><th>章节名</th><th style="width: 100px; text-align: center;">胜/负</th><th style="width: 90px; text-align: center;">胜率</th><th style="width: 100px; text-align: right;">积分</th></tr>`;
     const entries = Object.entries(statsStore.matches || {});
     if (entries.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color: var(--text-secondary); padding: 24px;">暂无对决数据，抉择两两章节即可累加积分！</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color: var(--text-secondary); padding: 24px;">暂无对决数据，完成两两对决即可累加积分！</td></tr>`;
       return;
     }
     const list = entries.map(([title, st]) => {
@@ -360,35 +428,6 @@ function renderStatsTable() {
       tr.innerHTML = `<td><span class="rank-tag ${rankClass}">${idx + 1}</span></td><td style="color:#fff;">${item.title}</td><td style="color:var(--text-secondary); font-size:0.85rem; text-align:center;">${item.win}胜/${item.loss}负</td><td style="color:#e2e8f0; text-align:center;">${item.rate}%</td><td style="color:var(--accent); font-weight:700; text-align:right;">${item.score} pt</td>`;
       tbody.appendChild(tr);
     });
-  }
-}
-
-function exportSyncCode() {
-  const code = btoa(encodeURIComponent(JSON.stringify(statsStore)));
-  navigator.clipboard.writeText(code).then(() => alert('数据同步码已复制到剪贴板！你可以在其他浏览器中点击“导入数据”完成同步。'));
-}
-
-function importSyncCode() {
-  const code = prompt('请粘贴从另一台设备导出的数据同步码：');
-  if (!code) return;
-  try {
-    const data = JSON.parse(decodeURIComponent(atob(code.trim())));
-    if (data && (data.champions || data.matches)) {
-      statsStore = data;
-      saveStore();
-      renderStatsTable();
-      alert('数据同步成功！');
-    }
-  } catch (e) {
-    alert('同步码格式无效，请检查重试');
-  }
-}
-
-function clearAllData() {
-  if (confirm('确定清空榜单数据吗？')) {
-    statsStore = { champions: {}, matches: {} };
-    saveStore();
-    renderStatsTable();
   }
 }
 
