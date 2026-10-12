@@ -15,306 +15,73 @@
     --text-primary: #f8fafc;
     --text-secondary: #94a3b8;
   }
-
   * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
-
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-primary);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 30px 16px;
+    background-color: var(--bg-color); color: var(--text-primary);
+    min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px 16px;
   }
-
   .container { width: 100%; max-width: 920px; text-align: center; }
-  
   header { margin-bottom: 1.8rem; }
   h1 { font-size: 2.2rem; color: var(--accent); letter-spacing: 2px; margin-bottom: 0.5rem; }
   .subtitle { color: var(--text-secondary); font-size: 0.95rem; }
-
-  .toolbar {
-    margin-bottom: 2rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-
+  .toolbar { margin-bottom: 2rem; display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap; }
   .vol-select {
-    background: var(--card-bg);
-    color: var(--text-primary);
-    border: 1px solid var(--accent);
-    padding: 9px 18px;
-    border-radius: 6px;
-    font-size: 0.95rem;
-    outline: none;
-    cursor: pointer;
+    background: var(--card-bg); color: var(--text-primary); border: 1px solid var(--accent);
+    padding: 9px 18px; border-radius: 6px; font-size: 0.95rem; outline: none; cursor: pointer;
   }
   .vol-select option { background: #11141d; }
-
-  .match-status {
-    margin-bottom: 1.5rem;
-    font-weight: 600;
-    color: var(--accent);
-    letter-spacing: 1px;
-    font-size: 1.1rem;
-    min-height: 1.6em;
-  }
-
-  .arena {
-    display: flex;
-    gap: 24px;
-    justify-content: center;
-    align-items: stretch;
-    position: relative;
-    min-height: 240px;
-  }
-
+  .match-status { margin-bottom: 1.5rem; font-weight: 600; color: var(--accent); letter-spacing: 1px; font-size: 1.1rem; min-height: 1.6em; }
+  .arena { display: flex; gap: 24px; justify-content: center; align-items: stretch; position: relative; min-height: 240px; }
   .vs-badge {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: var(--accent);
-    color: #000;
-    font-weight: 800;
-    font-size: 0.85rem;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 2;
-    pointer-events: none;
-    box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+    background: var(--accent); color: #000; font-weight: 800; font-size: 0.85rem;
+    width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    z-index: 2; pointer-events: none; box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
   }
-
   .card-option {
-    flex: 1;
-    background: var(--card-bg);
-    border: 2px solid var(--border-color);
-    border-radius: 12px;
-    padding: 2.8rem 1.8rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    flex: 1; background: var(--card-bg); border: 2px solid var(--border-color); border-radius: 12px;
+    padding: 2.8rem 1.8rem; display: flex; align-items: center; justify-content: center; cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
   }
-
-  .card-option:hover {
-    transform: translateY(-4px);
-    border-color: var(--accent);
-    background: var(--card-hover);
-    box-shadow: 0 8px 25px rgba(212, 175, 55, 0.2);
-  }
-
-  .card-title {
-    font-size: 1.35rem;
-    font-weight: 600;
-    line-height: 1.5;
-    color: #fff;
-    word-break: break-word;
-  }
-
-  .winner-box {
-    display: none;
-    background: var(--card-bg);
-    border: 2px solid var(--accent);
-    border-radius: 14px;
-    padding: 3rem 2rem;
-    animation: fadeIn 0.4s ease;
-    box-shadow: 0 0 30px rgba(212, 175, 55, 0.15);
-  }
-
-  .winner-label {
-    color: var(--text-secondary);
-    font-size: 0.95rem;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-  }
-
-  .winner-name {
-    font-size: 2.4rem;
-    color: var(--accent);
-    font-weight: 700;
-    margin: 1.2rem 0;
-  }
-
-  .upload-tip {
-    font-size: 0.95rem;
-    color: var(--text-secondary);
-    margin-bottom: 1.2rem;
-    min-height: 1.5em;
-  }
-
-  .btn-group {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    margin-top: 1.8rem;
-    flex-wrap: wrap;
-  }
-
-  .btn {
-    padding: 9px 20px;
-    background: var(--accent);
-    color: #000;
-    font-weight: 600;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 0.95rem;
-    transition: all 0.2s;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-  }
+  .card-option:hover { transform: translateY(-4px); border-color: var(--accent); background: var(--card-hover); box-shadow: 0 8px 25px rgba(212, 175, 55, 0.2); }
+  .card-title { font-size: 1.35rem; font-weight: 600; line-height: 1.5; color: #fff; word-break: break-word; }
+  .winner-box { display: none; background: var(--card-bg); border: 2px solid var(--accent); border-radius: 14px; padding: 3rem 2rem; box-shadow: 0 0 30px rgba(212, 175, 55, 0.15); }
+  .winner-label { color: var(--text-secondary); font-size: 0.95rem; letter-spacing: 2px; }
+  .winner-name { font-size: 2.4rem; color: var(--accent); font-weight: 700; margin: 1.2rem 0; }
+  .upload-tip { font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 1.2rem; min-height: 1.5em; }
+  .btn-group { display: flex; justify-content: center; gap: 12px; margin-top: 1.8rem; flex-wrap: wrap; }
+  .btn { padding: 9px 20px; background: var(--accent); color: #000; font-weight: 600; border: none; border-radius: 6px; cursor: pointer; font-size: 0.95rem; transition: all 0.2s; }
   .btn:hover { background: var(--accent-hover); }
-  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
   .btn-secondary { background: #252e45; color: #f8fafc; border: 1px solid var(--border-color); }
   .btn-secondary:hover { background: #334155; }
   .btn-danger { background: #7f1d1d; color: #fecaca; border: 1px solid #991b1b; }
-  .btn-danger:hover { background: #991b1b; }
-
-  /* 弹窗样式 */
-  .modal {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.85);
-    z-index: 1000;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    backdrop-filter: blur(5px);
-  }
+  
+  .modal { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); z-index: 1000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(5px); }
   .modal.show { display: flex; }
-
-  .modal-card {
-    background: #141824;
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    width: 100%;
-    max-width: 960px;
-    max-height: 85vh;
-    display: flex;
-    flex-direction: column;
-    padding: 24px;
-  }
-
-  .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 12px;
-    margin-bottom: 16px;
-  }
-
-  .modal-header-actions { display: flex; align-items: center; gap: 12px; }
+  .modal-card { background: #141824; border: 1px solid var(--border-color); border-radius: 12px; width: 100%; max-width: 960px; max-height: 85vh; display: flex; flex-direction: column; padding: 24px; }
+  .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 16px; }
   .modal-title { color: var(--accent); font-size: 1.25rem; font-weight: 600; }
-
-  .tab-group {
-    display: flex;
-    gap: 8px;
-    background: #0b0d14;
-    padding: 4px;
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
-  }
-  .tab-btn {
-    padding: 6px 14px;
-    border: none;
-    background: transparent;
-    color: var(--text-secondary);
-    cursor: pointer;
-    border-radius: 6px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    transition: all 0.2s;
-  }
-  .tab-btn.active {
-    background: var(--accent);
-    color: #000;
-  }
-
-  .close-btn {
-    background: transparent;
-    border: none;
-    color: var(--text-secondary);
-    font-size: 1.6rem;
-    cursor: pointer;
-    line-height: 1;
-  }
-  .close-btn:hover { color: #fff; }
-
+  .tab-group { display: flex; gap: 8px; background: #0b0d14; padding: 4px; border-radius: 8px; border: 1px solid var(--border-color); }
+  .tab-btn { padding: 6px 14px; border: none; background: transparent; color: var(--text-secondary); cursor: pointer; border-radius: 6px; font-size: 0.85rem; font-weight: 600; }
+  .tab-btn.active { background: var(--accent); color: #000; }
+  .close-btn { background: transparent; border: none; color: var(--text-secondary); font-size: 1.6rem; cursor: pointer; }
   .modal-body { overflow: auto; flex: 1; text-align: left; }
-
-  .modal-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-top: 1px solid var(--border-color);
-    padding-top: 14px;
-    margin-top: 14px;
-  }
-
-  .tree-container { display: flex; gap: 20px; padding: 10px 4px; min-width: max-content; }
-  .tree-round { min-width: 220px; display: flex; flex-direction: column; }
-  .tree-round-header {
-    font-size: 0.85rem; font-weight: 600; color: var(--text-secondary);
-    margin-bottom: 12px; text-align: center; padding-bottom: 6px;
-    border-bottom: 1px solid var(--border-color);
-  }
-
-  .tree-matches { display: flex; flex-direction: column; justify-content: space-around; flex: 1; gap: 12px; }
-  .match-node {
-    background: #1a2030; border: 1px solid var(--border-color);
-    border-radius: 6px; padding: 8px 10px; display: flex; flex-direction: column; gap: 4px;
-  }
-  .node-item {
-    font-size: 0.85rem; padding: 4px 6px; border-radius: 4px; color: #64748b;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-  .node-item.winner {
-    color: #f8fafc; background: rgba(212, 175, 55, 0.15); font-weight: 600;
-    border-left: 3px solid var(--accent);
-  }
-
+  .modal-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 14px; margin-top: 14px; flex-wrap: wrap; gap: 10px; }
   .stats-table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
   .stats-table th, .stats-table td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border-color); }
-  .stats-table th { color: var(--text-secondary); font-weight: 600; }
-
-  .rank-tag {
-    display: inline-block; width: 26px; height: 26px; line-height: 26px;
-    text-align: center; border-radius: 50%; font-weight: 700; font-size: 0.85rem;
-    background: #252e45; color: #fff;
-  }
+  .rank-tag { display: inline-block; width: 26px; height: 26px; line-height: 26px; text-align: center; border-radius: 50%; font-weight: 700; font-size: 0.85rem; background: #252e45; color: #fff; }
   .rank-1 { background: #d4af37; color: #000; }
   .rank-2 { background: #94a3b8; color: #000; }
   .rank-3 { background: #b45309; color: #fff; }
-
-  @keyframes fadeIn {
-    from { opacity: 0; transform: scale(0.98); }
-    to { opacity: 1; transform: scale(1); }
-  }
-
-  @media (max-width: 640px) {
-    .arena { flex-direction: column; }
-    .vs-badge { display: none; }
-    .modal-card { padding: 16px; }
-    .tab-group { width: 100%; margin-top: 8px; }
-  }
+  .tree-container { display: flex; gap: 20px; padding: 10px 4px; min-width: max-content; }
+  .tree-round { min-width: 220px; display: flex; flex-direction: column; }
+  .tree-round-header { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 12px; text-align: center; padding-bottom: 6px; border-bottom: 1px solid var(--border-color); }
+  .tree-matches { display: flex; flex-direction: column; justify-content: space-around; flex: 1; gap: 12px; }
+  .match-node { background: #1a2030; border: 1px solid var(--border-color); border-radius: 6px; padding: 8px 10px; display: flex; flex-direction: column; gap: 4px; }
+  .node-item { font-size: 0.85rem; padding: 4px 6px; border-radius: 4px; color: #64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .node-item.winner { color: #f8fafc; background: rgba(212, 175, 55, 0.15); font-weight: 600; border-left: 3px solid var(--accent); }
+  @media (max-width: 640px) { .arena { flex-direction: column; } .vs-badge { display: none; } }
 </style>
 </head>
 <body>
@@ -337,34 +104,27 @@
     <option value="7">第七卷 (70章)</option>
     <option value="all">全卷巅峰大乱斗 (共266章)</option>
   </select>
-  <button class="btn btn-secondary" onclick="openStatsModal()">查看全网天梯排行榜</button>
+  <button class="btn btn-secondary" onclick="openStatsModal()">查看天梯排行榜</button>
 </div>
 
-<!-- 对决界面 -->
 <div id="game-view">
   <div class="match-status" id="match-status">准备就绪</div>
   <div class="arena">
     <div class="vs-badge">VS</div>
-    <div class="card-option" onclick="pickWinner(0)">
-      <div class="card-title" id="title-a"></div>
-    </div>
-    <div class="card-option" onclick="pickWinner(1)">
-      <div class="card-title" id="title-b"></div>
-    </div>
+    <div class="card-option" onclick="pickWinner(0)"><div class="card-title" id="title-a"></div></div>
+    <div class="card-option" onclick="pickWinner(1)"><div class="card-title" id="title-b"></div></div>
   </div>
 </div>
 
-<!-- 优胜结算界面 -->
 <div id="winner-view" class="winner-box">
   <div class="winner-label">最终裁定章名</div>
   <div class="winner-name" id="final-champion"></div>
   <div class="upload-tip" id="upload-status">已决选出该卷桂冠</div>
-
   <div class="btn-group">
     <button class="btn" onclick="restart()">重新洗牌决选</button>
     <button class="btn btn-secondary" onclick="openTreeModal()">查看决选路线图</button>
-    <button class="btn btn-secondary" onclick="openStatsModal()">查看全网天梯排行榜</button>
-    <button class="btn" id="record-btn" onclick="recordToGlobalLeaderboard()">一键计入全网总热度</button>
+    <button class="btn btn-secondary" onclick="openStatsModal()">查看天梯排行榜</button>
+    <button class="btn" id="record-btn" onclick="recordToLeaderboard()">计入排行榜</button>
   </div>
 </div>
 </div>
@@ -374,141 +134,49 @@
 <div class="modal-card">
   <div class="modal-header">
     <div class="modal-title">决选晋级路线图</div>
-    <div class="modal-header-actions">
-      <button class="btn" style="padding: 6px 14px; font-size: 0.85rem;" onclick="exportTreeAsImage()">导出高清大图</button>
+    <div style="display:flex; gap:12px;">
+      <button class="btn" style="padding: 6px 14px; font-size: 0.85rem;" onclick="exportTreeAsImage()">导出高清图</button>
       <button class="close-btn" onclick="closeModal('tree-modal')">&times;</button>
     </div>
   </div>
-  <div class="modal-body">
-    <div class="tree-container" id="tree-container"></div>
-  </div>
+  <div class="modal-body"><div class="tree-container" id="tree-container"></div></div>
 </div>
 </div>
 
-<!-- 双天梯排行榜弹窗 -->
+<!-- 天梯排行榜弹窗 -->
 <div class="modal" id="stats-modal" onclick="onModalBgClick(event, 'stats-modal')">
 <div class="modal-card">
   <div class="modal-header" style="flex-wrap: wrap; gap: 10px;">
     <div style="display: flex; align-items: center; gap: 14px;">
-      <div class="modal-title">全网读者天梯排行榜</div>
+      <div class="modal-title">天梯排行榜</div>
       <div class="tab-group">
         <button class="tab-btn active" id="tab-champ" onclick="switchTab('champion')">桂冠夺冠榜</button>
-        <button class="tab-btn" id="tab-fav" onclick="switchTab('favorite')">综合喜爱度榜 (胜率与胜场)</button>
+        <button class="tab-btn" id="tab-fav" onclick="switchTab('favorite')">喜爱度积分榜</button>
       </div>
     </div>
     <button class="close-btn" onclick="closeModal('stats-modal')">&times;</button>
   </div>
   <div class="modal-body">
-    <table class="stats-table" id="stats-table">
+    <table class="stats-table">
       <thead id="stats-thead"></thead>
       <tbody id="stats-tbody"></tbody>
     </table>
   </div>
   <div class="modal-footer">
-    <span style="font-size: 0.8rem; color: var(--text-secondary);" id="sync-tip">☁️ 跨设备实时云同步中</span>
-    <button class="btn btn-danger" style="font-size: 0.8rem; padding: 6px 12px;" onclick="clearAllData()">清空重置榜单数据</button>
+    <span style="font-size: 0.8rem; color: var(--text-secondary);">支持导出同步码，在任意手机或电脑之间无缝同步</span>
+    <div style="display: flex; gap: 8px;">
+      <button class="btn btn-secondary" style="font-size: 0.8rem; padding: 6px 12px;" onclick="exportSyncCode()">导出数据</button>
+      <button class="btn btn-secondary" style="font-size: 0.8rem; padding: 6px 12px;" onclick="importSyncCode()">导入数据</button>
+      <button class="btn btn-danger" style="font-size: 0.8rem; padding: 6px 12px;" onclick="clearAllData()">清空</button>
+    </div>
   </div>
 </div>
 </div>
 
+<!-- 外部引入独立章名文件 -->
+<script src="./chapters.js"></script>
+
 <script>
-// 免费免鉴权公共云存储箱（自动支持跨浏览器同步读写）
-const CLOUD_BIN_ID = 'daohou-stats-master-2026';
-const CLOUD_API_BASE = 'https://api.counterapi.dev/v1';
-
-const CHAPTERS_BY_VOL = {
-  "1": [
-    "梨海市宗教文化交流节", "泛智人种族中心主义", "薰渠与小红帽", "鱼骨号", 
-    "潮素海洋生态学", "船行于烈火之梦", "时代蓦然回首", "浑天尽落手掌之下", 
-    "飞花献于星辰", "顽石指向归乡之途", "春尽之月映于湖中", "纵使无法飞翔", 
-    "箴谏以为龙之馈赠"
-  ],
-  "2": [
-    "中立港交通安全须知", "垃圾分类练习题", "反仇恨犯罪法案", "血迹通往天之高宫", 
-    "众演纷至登场", "土与纪念品营销艺术", "无愿者啖咽死尘", "残响涸为珍珠与泪", 
-    "诸门回荡情歌序曲", "若将永世长眠", "戒与鸽与唱诗人", "好一张漂亮脸儿", 
-    "无人知晓它的叫声", "女神与夜莺", "人鱼哀歌幽咽", "游戏重在参与", 
-    "道之尽处闪烁微光", "于是二人翩然起舞", "丧钟响彻神之庭园", "抑或明日骤醒", 
-    "国王致辞谢幕"
-  ],
-  "3": [
-    "白塔标准学徒协议", "深空铁路观光线", "因缘细若虫茧之丝", "死亡幂数馒头大赛", 
-    "链式管理图书馆", "亡魂悄立冰川之上", "寒霜渐覆眼目", "骨头露齿而笑", 
-    "獠牙撕裂寒风之喉", "黑燕栖息阴影之窝", "黄粱浮露幽隐之间", "连山深岫出云远", 
-    "步天游极攀星寒", "镜岸飘逝时光之流", "石器烧烤馒头", "永光殒灭未返之乡", 
-    "螺丝起子芳唇", "幻想迷溺青叶之烬", "真爱遗藏古铜之心", "金歌鸣破败朽之城", 
-    "石雕堕毁狡伪之声", "杀不出个黎明", "找不到只青蛙", "朝晖升起漫长告别", 
-    "冰镜重圆天涯故知", "层林惊栗至黑终刻", "蝶翅不期而展", "云君回翱明夷始开", 
-    "虺目无想而张", "孤注投往夙愿之池", "游蜉翻倒世界之扉", "栩然化蝶凌虚"
-  ],
-  "4": [
-    "二类结合伦理学", "神灵搭讪艺术家", "神明搭讪艺术家", "夜神暗匿试炼之约", 
-    "初声献上离曲", "其后致以爱诗", "往事吹扬镜底之尘", "雏雀啁啁而鸣", 
-    "天狱磨泯心隙之界", "摇篮曳曳而晃", "巢中回响安眠之歌", "焰上烁闪玄黑之虹", 
-    "令名将至此传", "猫与牌与漫画书", "故事从头说起", "潮汐锁定月之暗面", 
-    "天魔暗引道巫乱", "神人争斗进退难", "奇子入墟悟尘意", "仙姝逝羽传二姬", 
-    "农家汉仙乡遇怪童", "舞象儿灵河逢青女", "僬侥国诸生赴大举", "哈牟岛猢狲迎新官", 
-    "半冥城归葬祭海神", "砗磲园试手访三吏", "共舟人海上寻银沫", "偶回首往事似烟云", 
-    "惊幽梦飞雪若璇花", "若有人兮在山之阿", "朝云去兮暮雨悄来", "藐姑射兮心如渊泉", 
-    "登南桑兮帝女焚天", "勇士跨越魔洋", "细语低诉求死之欲", "狩猎逐亡流浆之宫", 
-    "英雄拥抱星海", "纵然终景遥遥无期", "以是少年姗姗而觉", "错序逐次递显", 
-    "正途恍惚溘逝", "辉尘诞于银波之末", "旅情发于乱奏之终"
-  ],
-  "5": [
-    "所赠贺卡与骨", "英雄偶像理论", "火花塔与心灵融合技术", "战火为何而燃", 
-    "问候致往星空之彩", "呼唤源起黑洞之巢", "遥庆欢宴之宾", "与魔共乐之时", 
-    "友谊地久天长", "武士之剑挥洒若风", "邦邦与新手约会指南", "可能性百货商品目录", 
-    "父爱如山似岳", "螺尖若有海鸣之泣", "其药甘糖同毒", "真命回旋鹈鹕瓶中", 
-    "宛若罗网在空", "魔杖妖精滚来滚去", "浅望面纱之后", "踟蹰影国之间", 
-    "黏液怪兽不慌不忙", "灰马乘风而至", "武神骑行柳林之外", "冥河渡引帷幕之前", 
-    "银匙埋于水中", "莲舟迈往狱火", "吹响魔笛之人", "盛祝国王万岁不终", 
-    "弃落诞想之径", "镌铭墀下之言", "命运魔女蹈于树心", "以此虚无脱却衣甲", 
-    "彼时定为真诚所在", "素交自死而来", "致悲剧乐观主义者", "四角缠为山茱萸结", 
-    "哺以胸膛刺血", "三岔择于理式尽头", "骃群皇皇于彼", "火花闪闪在心", 
-    "必杀法式浪漫魔术", "霜外天轮幅画", "如至书中永恒", "形式语言的诗性迷狂", 
-    "终将此愿倾诉于星", "由是始生森罗万象", "冕冠荆棘混沌", "悼亡逝景的置彼周行", 
-    "洞中七日永劫", "壁前囚徒夜谈", "打印式雏形许愿机"
-  ],
-  "6": [
-    "石与天文潮汐计算器", "家庭幽默录像带", "信自猴岛之国", "毛肚子吞吞折扣日", 
-    "丰饶园内的春雪", "通往故乡的银鞋", "宛若故人重来", "阿狄亚塔尔的公主", 
-    "百世级祖母虎式微笑", "双绳悬系缺满之玉", "笼价三十银钱", "红帽先生的不幸结局", 
-    "骨碌碌杀手转起来", "七十万比三分五厘", "一千零一婴儿遗弃案", "翘翘天翼与双人大盗", 
-    "寄自昨日的纸笺", "寄自昨日的信笺", "轰隆隆大陆落下去", "暗杀界的雪里拖枪", 
-    "宇宙魔瞳普伦西", "猫与彗光女巫", "非正式经济补偿金", "声线管工的雕像", 
-    "下水道民间声学家", "寒冰炼狱魔鬼战车", "撷华之徒永无来世", "桃始开于惊蛰", 
-    "生命医学考察报告", "和她所约定的事", "极乐城中金铃齐唱", "老人与三个愿望", 
-    "流氓追求者的宣言", "凌晨三刻七分", "马格里布的魔法师", "揭起铜环之门", 
-    "糖饭桌激光踢踏舞", "碧之女王纪念日", "天方夜谭狂想曲", "好妈妈的故事", 
-    "堂吉诃德如是说", "渔夫与金鱼", "阿格拉巴之国", "莫比乌斯之月", 
-    "坏妈妈的故事", "在此模型之内", "不好不坏父亲的故事", "猫、屠夫与工程师", 
-    "一个未完成的愿望", "暗自哭泣者的故事", "一个已完成的愿望", "一个大团圆的故事", 
-    "一个必须完成的愿望", "碎花链子与银打火机", "全态通用型制喵刑具", "第一次亲密接触", 
-    "命运即为人所共愿", "舍赫拉查德之谋", "灯内若虫的起源故事", "林中守卫的退场故事", 
-    "终焉大决战"
-  ],
-  "7": [
-    "海上说云解雨", "夜中梦渊歌月", "伦尼·科莱因在水里", "海怪小队大败而归", 
-    "昆虫学者回家了", "从零开始的都市生活", "了不起的罗少爷", "好警察，坏警察", 
-    "夜访外卖员", "皮格马利翁", "欢迎来到丛林", "拿着一枚硬币的男孩", 
-    "孤游如云", "天真预言", "花园墙外", "还乡曲", 
-    "船夫与那伊阿得斯", "疑林", "故客", "欢聚", 
-    "前夜", "讯问", "审判", "裁决", 
-    "第三态", "于天堂与地狱之间", "瓦尔普吉斯的序幕", "人生最重要的事", 
-    "西洲曲", "鹦鹉歌", "摽有梅", "野有蔓草", 
-    "狗群", "也算是一种结局", "猫的大敌", "逡巡于径", 
-    "农人之遗", "老鼠药", "涉江", "名的诅咒", 
-    "无界之笼", "我相非相", "漏入诸因", "系缚恶业", 
-    "余歌", "狩猎于林", "杀人不难", "问吉", 
-    "东游", "天下泽", "水中火", "亡者之诗", 
-    "幕后之人", "同谋", "菡萏梦", "为星辰击坠", 
-    "晚晴", "蜗牛角", "至乐", "此途不返", 
-    "长夜", "丽姬娅", "通往无限的十字路口", "晓暾", 
-    "风光旖旎的佳境", "世界乃生死的花园", "天之涯，地之角", "墙内", 
-    "毕舍遮", "园中之王"
-  ]
-};
-
 let currentRoundCandidates = [];
 let nextRoundWinners = [];
 let currentMatchIndex = 0;
@@ -519,55 +187,20 @@ let roundMatches = [];
 let hasVotedThisGame = false;
 let currentTab = 'champion';
 
-// 本地与云端共享的统一状态对象
-let statsStore = { champions: {}, matches: {} };
+let statsStore = JSON.parse(localStorage.getItem('daohou_stats_store') || '{"champions":{}, "matches":{}}');
 
-// 初始化从云端拉取数据
-async function loadDataFromCloud() {
-  try {
-    // 优先从 localStorage 提取打底
-    const local = localStorage.getItem('daohou_stats_store');
-    if (local) statsStore = JSON.parse(local);
-
-    // 云端请求跨设备聚合数据
-    const res = await fetch(`https://api.jsonstorage.net/v1/json/daohou-stats/master`, {
-      cache: 'no-cache'
-    });
-    if (res.ok) {
-      const cloudData = await res.json();
-      if (cloudData && (cloudData.champions || cloudData.matches)) {
-        // 合并本地与云端，确保胜场不遗漏
-        statsStore.champions = Object.assign({}, statsStore.champions, cloudData.champions);
-        statsStore.matches = Object.assign({}, statsStore.matches, cloudData.matches);
-        localStorage.setItem('daohou_stats_store', JSON.stringify(statsStore));
-        document.getElementById('sync-tip').innerText = '☁️ 已成功与全网读者数据库实时同步';
-      }
-    }
-  } catch (e) {
-    document.getElementById('sync-tip').innerText = '⚡ 本地极速模式';
-  }
-}
-
-async function pushDataToCloud() {
-  try {
-    localStorage.setItem('daohou_stats_store', JSON.stringify(statsStore));
-    await fetch(`https://api.jsonstorage.net/v1/json/daohou-stats/master`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(statsStore)
-    });
-  } catch(e) {}
+function saveStore() {
+  localStorage.setItem('daohou_stats_store', JSON.stringify(statsStore));
 }
 
 function getChaptersForVol(vol) {
+  if (!window.CHAPTERS_BY_VOL) return [];
   if (vol === 'all') {
     let all = [];
-    for (let i = 1; i <= 7; i++) {
-      all = all.concat(CHAPTERS_BY_VOL[String(i)] || []);
-    }
+    for (let i = 1; i <= 7; i++) all = all.concat(window.CHAPTERS_BY_VOL[String(i)] || []);
     return all;
   }
-  return CHAPTERS_BY_VOL[vol] || [];
+  return window.CHAPTERS_BY_VOL[vol] || [];
 }
 
 function shuffle(arr) {
@@ -581,8 +214,7 @@ function shuffle(arr) {
 
 function onVolChange() {
   const vol = document.getElementById('vol-select').value;
-  const pool = getChaptersForVol(vol);
-  startTournament(pool);
+  startTournament(getChaptersForVol(vol));
 }
 
 function startTournament(pool) {
@@ -597,13 +229,11 @@ function startTournament(pool) {
 
   const recordBtn = document.getElementById('record-btn');
   recordBtn.disabled = false;
-  recordBtn.innerText = '一键计入全网总热度';
+  recordBtn.innerText = '计入排行榜';
   recordBtn.style.background = 'var(--accent)';
-  recordBtn.style.color = '#000';
 
   document.getElementById('winner-view').style.display = 'none';
   document.getElementById('game-view').style.display = 'block';
-
   renderMatch();
 }
 
@@ -636,11 +266,9 @@ function renderMatch() {
 
   document.getElementById('title-a').innerText = itemA;
   document.getElementById('title-b').innerText = itemB;
-
   const totalMatches = Math.ceil(currentRoundCandidates.length / 2);
   const currentMatch = Math.floor(currentMatchIndex / 2) + 1;
-  document.getElementById('match-status').innerText = 
-    `第 ${roundNumber} 轮 · 对决 (${currentMatch}/${totalMatches})`;
+  document.getElementById('match-status').innerText = `第 ${roundNumber} 轮 · 对决 (${currentMatch}/${totalMatches})`;
 }
 
 function pickWinner(index) {
@@ -654,8 +282,7 @@ function pickWinner(index) {
   statsStore.matches[winner].win += 1;
   statsStore.matches[winner].total += 1;
   statsStore.matches[loser].total += 1;
-
-  pushDataToCloud();
+  saveStore();
 
   roundMatches.push({ a: itemA, b: itemB, winner: winner });
   nextRoundWinners.push(winner);
@@ -668,26 +295,20 @@ function showChampion(championName) {
   document.getElementById('game-view').style.display = 'none';
   document.getElementById('winner-view').style.display = 'block';
   document.getElementById('final-champion').innerText = championName;
-  document.getElementById('upload-status').innerText = `全部对决完成！点击下方按钮将结果计入全网总热度榜`;
+  document.getElementById('upload-status').innerText = '决选结束！点击下方按钮将结果计入排行榜';
 }
 
-async function recordToGlobalLeaderboard() {
+function recordToLeaderboard() {
   if (!finalChampionName || hasVotedThisGame) return;
+  statsStore.champions[finalChampionName] = (statsStore.champions[finalChampionName] || 0) + 1;
+  saveStore();
+  hasVotedThisGame = true;
 
   const recordBtn = document.getElementById('record-btn');
-  const statusTip = document.getElementById('upload-status');
   recordBtn.disabled = true;
-  recordBtn.innerText = '正在同步全网...';
-
-  // 计入夺冠总榜
-  statsStore.champions[finalChampionName] = (statsStore.champions[finalChampionName] || 0) + 1;
-  await pushDataToCloud();
-
-  hasVotedThisGame = true;
-  statusTip.innerText = `计票成功！《${finalChampionName}》已成功计入全网天梯数据库`;
-  recordBtn.innerText = '已成功计入全网';
+  recordBtn.innerText = '已成功计入榜单';
   recordBtn.style.background = '#252e45';
-  recordBtn.style.color = '#94a3b8';
+  document.getElementById('upload-status').innerText = `《${finalChampionName}》已累计获冠 ${statsStore.champions[finalChampionName]} 次！`;
 }
 
 function switchTab(type) {
@@ -697,11 +318,8 @@ function switchTab(type) {
   renderStatsTable();
 }
 
-async function openStatsModal() {
+function openStatsModal() {
   document.getElementById('stats-modal').classList.add('show');
-  renderStatsTable();
-  // 弹窗打开时再静默拉取一次最新云端数据
-  await loadDataFromCloud();
   renderStatsTable();
 }
 
@@ -711,127 +329,92 @@ function renderStatsTable() {
   tbody.innerHTML = '';
 
   if (currentTab === 'champion') {
-    thead.innerHTML = `
-      <tr>
-        <th style="width: 70px;">排名</th>
-        <th>章节名</th>
-        <th style="width: 140px; text-align: right;">全网夺冠次数</th>
-      </tr>
-    `;
-
+    thead.innerHTML = `<tr><th style="width: 70px;">排名</th><th>章节名</th><th style="width: 130px; text-align: right;">夺冠总次数</th></tr>`;
     const entries = Object.entries(statsStore.champions || {});
     if (entries.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color: var(--text-secondary); padding: 28px;">暂无夺冠记录，完成决选并点击“一键计入全网总热度”将产生首位冠军！</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color: var(--text-secondary); padding: 24px;">暂无夺冠数据，完成决选并点击计入即可上榜！</td></tr>`;
       return;
     }
-
     entries.sort((a, b) => b[1] - a[1]);
-
     entries.forEach(([title, count], idx) => {
       const tr = document.createElement('tr');
       const rankClass = idx === 0 ? 'rank-1' : idx === 1 ? 'rank-2' : idx === 2 ? 'rank-3' : '';
-      tr.innerHTML = `
-        <td><span class="rank-tag ${rankClass}">${idx + 1}</span></td>
-        <td style="color: #fff; font-weight: ${idx < 3 ? '600' : 'normal'}">${title}</td>
-        <td style="color: var(--accent); font-weight: 700; text-align: right;">${count} 次</td>
-      `;
+      tr.innerHTML = `<td><span class="rank-tag ${rankClass}">${idx + 1}</span></td><td style="color:#fff;">${title}</td><td style="color:var(--accent); font-weight:700; text-align:right;">${count} 次</td>`;
       tbody.appendChild(tr);
     });
-
   } else {
-    thead.innerHTML = `
-      <tr>
-        <th style="width: 70px;">排名</th>
-        <th>章节名</th>
-        <th style="width: 110px; text-align: center;">胜/负/出场</th>
-        <th style="width: 90px; text-align: center;">胜率</th>
-        <th style="width: 110px; text-align: right;">全网喜爱度</th>
-      </tr>
-    `;
-
-    const matchEntries = Object.entries(statsStore.matches || {});
-    if (matchEntries.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color: var(--text-secondary); padding: 28px;">暂无对决数据，完成几组两两对决后即刻生成天梯积分！</td></tr>`;
+    thead.innerHTML = `<tr><th style="width: 70px;">排名</th><th>章节名</th><th style="width: 100px; text-align: center;">胜/负</th><th style="width: 90px; text-align: center;">胜率</th><th style="width: 100px; text-align: right;">积分</th></tr>`;
+    const entries = Object.entries(statsStore.matches || {});
+    if (entries.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color: var(--text-secondary); padding: 24px;">暂无对决数据，抉择两两章节即可累加积分！</td></tr>`;
       return;
     }
-
-    const list = matchEntries.map(([title, st]) => {
-      const winRate = st.total > 0 ? (st.win / st.total) : 0;
-      const score = Math.round(st.win * 10 + winRate * 100);
-      return {
-        title,
-        win: st.win,
-        loss: st.total - st.win,
-        total: st.total,
-        winRate: (winRate * 100).toFixed(1),
-        score: score
-      };
+    const list = entries.map(([title, st]) => {
+      const rate = st.total > 0 ? (st.win / st.total) : 0;
+      return { title, win: st.win, loss: st.total - st.win, rate: (rate * 100).toFixed(1), score: Math.round(st.win * 10 + rate * 100) };
     });
-
     list.sort((a, b) => b.score - a.score || b.win - a.win);
-
     list.forEach((item, idx) => {
       const tr = document.createElement('tr');
       const rankClass = idx === 0 ? 'rank-1' : idx === 1 ? 'rank-2' : idx === 2 ? 'rank-3' : '';
-      tr.innerHTML = `
-        <td><span class="rank-tag ${rankClass}">${idx + 1}</span></td>
-        <td style="color: #fff; font-weight: ${idx < 3 ? '600' : 'normal'}">${item.title}</td>
-        <td style="color: var(--text-secondary); font-size: 0.85rem; text-align: center;">${item.win}胜 / ${item.loss}负</td>
-        <td style="color: #e2e8f0; font-weight: 600; text-align: center;">${item.winRate}%</td>
-        <td style="color: var(--accent); font-weight: 700; text-align: right;">${item.score} pt</td>
-      `;
+      tr.innerHTML = `<td><span class="rank-tag ${rankClass}">${idx + 1}</span></td><td style="color:#fff;">${item.title}</td><td style="color:var(--text-secondary); font-size:0.85rem; text-align:center;">${item.win}胜/${item.loss}负</td><td style="color:#e2e8f0; text-align:center;">${item.rate}%</td><td style="color:var(--accent); font-weight:700; text-align:right;">${item.score} pt</td>`;
       tbody.appendChild(tr);
     });
   }
 }
 
-async function clearAllData() {
-  if (confirm('确定要清空全网榜单数据吗？此操作将重置所有设备上的统计数据。')) {
+function exportSyncCode() {
+  const code = btoa(encodeURIComponent(JSON.stringify(statsStore)));
+  navigator.clipboard.writeText(code).then(() => alert('数据同步码已复制到剪贴板！你可以在其他浏览器中点击“导入数据”完成同步。'));
+}
+
+function importSyncCode() {
+  const code = prompt('请粘贴从另一台设备导出的数据同步码：');
+  if (!code) return;
+  try {
+    const data = JSON.parse(decodeURIComponent(atob(code.trim())));
+    if (data && (data.champions || data.matches)) {
+      statsStore = data;
+      saveStore();
+      renderStatsTable();
+      alert('数据同步成功！');
+    }
+  } catch (e) {
+    alert('同步码格式无效，请检查重试');
+  }
+}
+
+function clearAllData() {
+  if (confirm('确定清空榜单数据吗？')) {
     statsStore = { champions: {}, matches: {} };
-    localStorage.removeItem('daohou_stats_store');
-    await pushDataToCloud();
+    saveStore();
     renderStatsTable();
-    alert('已成功清空所有数据！');
   }
 }
 
 function openTreeModal() {
   const container = document.getElementById('tree-container');
   container.innerHTML = '';
-
   tournamentTree.forEach((round, rIndex) => {
     const roundEl = document.createElement('div');
     roundEl.className = 'tree-round';
-
     const isFinal = rIndex === tournamentTree.length - 1;
-    const isSemi = rIndex === tournamentTree.length - 2;
-    let title = `第 ${rIndex + 1} 轮`;
-    if (isFinal) title = '决赛';
-    else if (isSemi && tournamentTree.length > 2) title = '半决赛';
-
+    let title = isFinal ? '决赛' : `第 ${rIndex + 1} 轮`;
     roundEl.innerHTML = `<div class="tree-round-header">${title}</div>`;
-
     const matchesEl = document.createElement('div');
     matchesEl.className = 'tree-matches';
-
     round.forEach(m => {
       const matchNode = document.createElement('div');
       matchNode.className = 'match-node';
-
-      const itemAClass = m.winner === m.a ? 'node-item winner' : 'node-item';
-      const itemBClass = m.winner === m.b ? 'node-item winner' : 'node-item';
-
       matchNode.innerHTML = `
-        <div class="${itemAClass}" title="${m.a}">${m.a}</div>
-        <div class="${itemBClass}" title="${m.b}">${m.b}</div>
+        <div class="node-item ${m.winner === m.a ? 'winner' : ''}">${m.a}</div>
+        <div class="node-item ${m.winner === m.b ? 'winner' : ''}">${m.b}</div>
       `;
       matchesEl.appendChild(matchNode);
     });
-
     roundEl.appendChild(matchesEl);
     container.appendChild(roundEl);
   });
-
   document.getElementById('tree-modal').classList.add('show');
 }
 
@@ -841,83 +424,35 @@ function restart() { onVolChange(); }
 
 function exportTreeAsImage() {
   if (!tournamentTree || tournamentTree.length === 0) return;
-
-  const colWidth = 240;
-  const colGap = 40;
-  const cardHeight = 68;
-  const paddingX = 40;
-  const paddingTop = 120;
-  const paddingBottom = 40;
-
-  let maxMatchesInRound = 1;
-  tournamentTree.forEach(r => {
-    if (r.length > maxMatchesInRound) maxMatchesInRound = r.length;
-  });
-
+  const colWidth = 240, colGap = 40, cardHeight = 68, paddingX = 40, paddingTop = 120, paddingBottom = 40;
+  let maxMatches = 1;
+  tournamentTree.forEach(r => { if (r.length > maxMatches) maxMatches = r.length; });
   const totalWidth = paddingX * 2 + tournamentTree.length * colWidth + (tournamentTree.length - 1) * colGap;
-  const availableHeight = Math.max(maxMatchesInRound * 85, 480);
+  const availableHeight = Math.max(maxMatches * 85, 480);
   const totalHeight = paddingTop + availableHeight + paddingBottom;
 
   const canvas = document.createElement('canvas');
   const dpr = window.devicePixelRatio || 2;
-  canvas.width = totalWidth * dpr;
-  canvas.height = totalHeight * dpr;
+  canvas.width = totalWidth * dpr; canvas.height = totalHeight * dpr;
   const ctx = canvas.getContext('2d');
   ctx.scale(dpr, dpr);
 
-  ctx.fillStyle = '#0b0d14';
-  ctx.fillRect(0, 0, totalWidth, totalHeight);
-  ctx.strokeStyle = '#252e45';
-  ctx.lineWidth = 2;
-  ctx.strokeRect(10, 10, totalWidth - 20, totalHeight - 20);
-
-  const volSelect = document.getElementById('vol-select');
-  const volText = volSelect.options[volSelect.selectedIndex].text;
-  ctx.fillStyle = '#d4af37';
-  ctx.font = 'bold 24px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Microsoft YaHei"';
-  ctx.textAlign = 'left';
-  ctx.fillText('道猴章名竞赛 · 决选晋级路线图', paddingX, 48);
-
-  ctx.fillStyle = '#94a3b8';
-  ctx.font = '14px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Microsoft YaHei"';
-  ctx.fillText(`决选范围: ${volText}   |   最终裁定章名: ${finalChampionName || '未完成'}`, paddingX, 76);
-
-  ctx.strokeStyle = '#1c2236';
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(paddingX, 94);
-  ctx.lineTo(totalWidth - paddingX, 94);
-  ctx.stroke();
+  ctx.fillStyle = '#0b0d14'; ctx.fillRect(0, 0, totalWidth, totalHeight);
+  ctx.fillStyle = '#d4af37'; ctx.font = 'bold 24px sans-serif';
+  ctx.fillText('道猴章名决选路线图', paddingX, 48);
 
   tournamentTree.forEach((round, colIndex) => {
     const x = paddingX + colIndex * (colWidth + colGap);
-    const matchCount = round.length;
-    const slotHeight = availableHeight / matchCount;
-
-    const isFinal = colIndex === tournamentTree.length - 1;
-    const isSemi = colIndex === tournamentTree.length - 2;
-    let roundTitle = `第 ${colIndex + 1} 轮`;
-    if (isFinal) roundTitle = '决赛';
-    else if (isSemi && tournamentTree.length > 2) roundTitle = '半决赛';
-
-    ctx.fillStyle = '#94a3b8';
-    ctx.font = 'bold 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Microsoft YaHei"';
-    ctx.textAlign = 'center';
-    ctx.fillText(roundTitle, x + colWidth / 2, paddingTop - 12);
-
+    const slotHeight = availableHeight / round.length;
     round.forEach((m, mIndex) => {
       const y = paddingTop + mIndex * slotHeight + (slotHeight - cardHeight) / 2;
-
-      ctx.fillStyle = '#141824';
-      ctx.beginPath();
-      ctx.roundRect(x, y, colWidth, cardHeight, 6);
-      ctx.fill();
-      ctx.strokeStyle = '#252e45';
-      ctx.lineWidth = 1;
-      ctx.stroke();
-
-      drawNodeItem(ctx, x + 6, y + 6, colWidth - 12, 26, m.a, m.winner === m.a);
-      drawNodeItem(ctx, x + 6, y + 36, colWidth - 12, 26, m.b, m.winner === m.b);
+      ctx.fillStyle = '#141824'; ctx.fillRect(x, y, colWidth, cardHeight);
+      ctx.strokeStyle = '#252e45'; ctx.strokeRect(x, y, colWidth, cardHeight);
+      ctx.fillStyle = m.winner === m.a ? '#d4af37' : '#94a3b8';
+      ctx.font = '12px sans-serif';
+      ctx.fillText(m.a.slice(0, 14), x + 8, y + 24);
+      ctx.fillStyle = m.winner === m.b ? '#d4af37' : '#94a3b8';
+      ctx.fillText(m.b.slice(0, 14), x + 8, y + 50);
     });
   });
 
@@ -927,37 +462,7 @@ function exportTreeAsImage() {
   link.click();
 }
 
-function drawNodeItem(ctx, x, y, w, h, text, isWinner) {
-  if (isWinner) {
-    ctx.fillStyle = 'rgba(212, 175, 55, 0.16)';
-    ctx.beginPath();
-    ctx.roundRect(x, y, w, h, 4);
-    ctx.fill();
-    ctx.fillStyle = '#d4af37';
-    ctx.fillRect(x, y, 3, h);
-    ctx.fillStyle = '#f8fafc';
-    ctx.font = 'bold 12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Microsoft YaHei"';
-  } else {
-    ctx.fillStyle = '#64748b';
-    ctx.font = '12px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Microsoft YaHei"';
-  }
-
-  ctx.textAlign = 'left';
-  ctx.textBaseline = 'middle';
-
-  let displayText = text;
-  while (ctx.measureText(displayText).width > w - 16 && displayText.length > 1) {
-    displayText = displayText.slice(0, -1);
-  }
-  if (displayText !== text) displayText += '...';
-
-  ctx.fillText(displayText, x + 8, y + h / 2);
-}
-
-window.onload = async () => {
-  await loadDataFromCloud();
-  onVolChange();
-};
+window.onload = onVolChange;
 </script>
 </body>
 </html>
