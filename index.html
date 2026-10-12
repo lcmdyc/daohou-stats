@@ -91,6 +91,10 @@
   .sync-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
   .sync-ok { background: #22c55e; }
   .sync-err { background: #ef4444; }
+  .warn-icon { font-size: 2.6rem; margin-bottom: 0.8rem; }
+  .warn-text { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.8; text-align: left; }
+  .warn-text b { color: var(--accent); }
+  .export-disabled-tip { font-size: 0.85rem; color: var(--text-secondary); background: #1a2030; padding: 8px 14px; border-radius: 6px; border: 1px solid var(--border-color); }
   @media (max-width: 640px) { .arena { flex-direction: column; } .vs-badge { display: none; } }
 </style>
 </head>
@@ -99,7 +103,7 @@
 <div class="container">
 <header>
   <h1>道猴章名决选</h1>
-  <p class="subtitle">遵从直觉，选出你心目中最具神韵的章节名 · 全网实时同步</p>
+  <p class="subtitle">选出你心目中最喜爱的章节名</p>
 </header>
 
 <div class="toolbar">
@@ -139,13 +143,36 @@
 </div>
 </div>
 
+<!-- 全卷模式开始前警告弹窗 -->
+<div class="modal" id="all-warning-modal">
+<div class="modal-card" style="max-width: 480px;">
+  <div class="modal-header">
+    <div class="modal-title">⚠️ 开始前请注意</div>
+  </div>
+  <div class="modal-body" style="text-align: center;">
+    <div class="warn-icon">🏆</div>
+    <p class="warn-text">
+      你即将挑战 <b>全卷章名共266章）</b>，这是最硬核的决选模式：<br><br>
+      · 需要经过约 <b>9 轮</b>连续两两对决才能决出最终冠军<br>
+      · 由于轮次与节点数量过多，<b>完成后将不提供"路线图高清导出"功能</b>，仅支持在线查看<br>
+      · 建议预留充足时间，耐心完成整个决选流程
+    </p>
+  </div>
+  <div class="modal-footer" style="justify-content: center;">
+    <button class="btn btn-secondary" onclick="cancelAllMode()">取消，返回选择</button>
+    <button class="btn" onclick="confirmAllMode()">我已知悉，开始挑战</button>
+  </div>
+</div>
+</div>
+
 <!-- 路线图弹窗 -->
 <div class="modal" id="tree-modal" onclick="onModalBgClick(event, 'tree-modal')">
 <div class="modal-card">
   <div class="modal-header">
     <div class="modal-title">决选晋级路线图</div>
-    <div style="display:flex; gap:12px;">
-      <button class="btn" style="padding: 6px 14px; font-size: 0.85rem;" onclick="exportTreeAsImage()">导出高清图</button>
+    <div style="display:flex; gap:12px; align-items:center;">
+      <span class="export-disabled-tip" id="export-disabled-tip" style="display:none;">全卷模式暂不支持导出</span>
+      <button class="btn" id="export-tree-btn" style="padding: 6px 14px; font-size: 0.85rem;" onclick="exportTreeAsImage()">导出高清图</button>
       <button class="close-btn" onclick="closeModal('tree-modal')">&times;</button>
     </div>
   </div>
@@ -209,6 +236,8 @@ let hasVotedThisGame = false;
 let currentTab = 'champion';
 let statsStore = { champions: {}, matches: {} };
 let isCloudConnected = false;
+let isAllMode = false;
+let previousVolValue = '1';
 
 function getChaptersForVol(vol) {
   if (!window.CHAPTERS_BY_VOL) return [];
@@ -231,7 +260,25 @@ function shuffle(arr) {
 
 function onVolChange() {
   const vol = document.getElementById('vol-select').value;
+  if (vol === 'all') {
+    document.getElementById('all-warning-modal').classList.add('show');
+    return;
+  }
+  previousVolValue = vol;
+  isAllMode = false;
   startTournament(getChaptersForVol(vol));
+}
+
+function confirmAllMode() {
+  document.getElementById('all-warning-modal').classList.remove('show');
+  previousVolValue = 'all';
+  isAllMode = true;
+  startTournament(getChaptersForVol('all'));
+}
+
+function cancelAllMode() {
+  document.getElementById('all-warning-modal').classList.remove('show');
+  document.getElementById('vol-select').value = previousVolValue;
 }
 
 function startTournament(pool) {
@@ -454,6 +501,18 @@ function openTreeModal() {
     roundEl.appendChild(matchesEl);
     container.appendChild(roundEl);
   });
+
+  // 全卷模式屏蔽导出功能
+  const exportBtn = document.getElementById('export-tree-btn');
+  const disabledTip = document.getElementById('export-disabled-tip');
+  if (isAllMode) {
+    exportBtn.style.display = 'none';
+    disabledTip.style.display = 'inline-block';
+  } else {
+    exportBtn.style.display = 'inline-block';
+    disabledTip.style.display = 'none';
+  }
+
   document.getElementById('tree-modal').classList.add('show');
 }
 
@@ -462,6 +521,7 @@ function onModalBgClick(e, id) { if (e.target.id === id) closeModal(id); }
 function restart() { onVolChange(); }
 
 function exportTreeAsImage() {
+  if (isAllMode) return; // 全卷模式禁止导出
   if (!tournamentTree || tournamentTree.length === 0) return;
   const colWidth = 240, colGap = 40, cardHeight = 68, paddingX = 40, paddingTop = 120, paddingBottom = 40;
   let maxMatches = 1;
