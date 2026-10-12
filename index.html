@@ -4,99 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>道猴章名决选</title>
-<style>
-  :root {
-    --bg-color: #0b0d14;
-    --card-bg: #141824;
-    --card-hover: #1c2236;
-    --border-color: #252e45;
-    --accent: #d4af37;
-    --accent-hover: #f1c40f;
-    --text-primary: #f8fafc;
-    --text-secondary: #94a3b8;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Microsoft YaHei", sans-serif;
-    background-color: var(--bg-color); color: var(--text-primary);
-    min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px 16px;
-  }
-  .container { width: 100%; max-width: 920px; text-align: center; }
-  header { margin-bottom: 1.8rem; }
-  h1 { font-size: 2.2rem; color: var(--accent); letter-spacing: 2px; margin-bottom: 0.5rem; }
-  .subtitle { color: var(--text-secondary); font-size: 0.95rem; }
-  .toolbar { margin-bottom: 2rem; display: flex; justify-content: center; align-items: center; gap: 12px; flex-wrap: wrap; }
-  .vol-select {
-    background: var(--card-bg); color: var(--text-primary); border: 1px solid var(--accent);
-    padding: 9px 18px; border-radius: 6px; font-size: 0.95rem; outline: none; cursor: pointer;
-  }
-  .vol-select option { background: #11141d; }
-  .match-status { margin-bottom: 1.5rem; font-weight: 600; color: var(--accent); letter-spacing: 1px; font-size: 1.1rem; min-height: 1.6em; }
-  .arena { display: flex; gap: 24px; justify-content: center; align-items: stretch; position: relative; min-height: 240px; }
-  .vs-badge {
-    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-    background: var(--accent); color: #000; font-weight: 800; font-size: 0.85rem;
-    width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-    z-index: 2; pointer-events: none; box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
-  }
-  .card-option {
-    flex: 1; background: var(--card-bg); border: 2px solid var(--border-color); border-radius: 12px;
-    padding: 2.8rem 1.8rem; display: flex; align-items: center; justify-content: center; cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
-  }
-  .card-option:hover { transform: translateY(-4px); border-color: var(--accent); background: var(--card-hover); box-shadow: 0 8px 25px rgba(212, 175, 55, 0.2); }
-  .card-option.disabled { pointer-events: none; opacity: 0.6; }
-  .card-title { font-size: 1.35rem; font-weight: 600; line-height: 1.5; color: #fff; word-break: break-word; }
-  .winner-box { display: none; background: var(--card-bg); border: 2px solid var(--accent); border-radius: 14px; padding: 3rem 2rem; box-shadow: 0 0 30px rgba(212, 175, 55, 0.15); }
-  .winner-label { color: var(--text-secondary); font-size: 0.95rem; letter-spacing: 2px; }
-  .winner-name { font-size: 2.4rem; color: var(--accent); font-weight: 700; margin: 1.2rem 0; }
-  .upload-tip { font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 1.2rem; min-height: 1.5em; }
-  .btn-group { display: flex; justify-content: center; gap: 12px; margin-top: 1.8rem; flex-wrap: wrap; }
-  .btn { padding: 9px 20px; background: var(--accent); color: #000; font-weight: 600; border: none; border-radius: 6px; cursor: pointer; font-size: 0.95rem; transition: all 0.2s; }
-  .btn:hover { background: var(--accent-hover); }
-  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-  .btn-secondary { background: #252e45; color: #f8fafc; border: 1px solid var(--border-color); }
-  .btn-secondary:hover { background: #334155; }
-  .btn-danger { background: #7f1d1d; color: #fecaca; border: 1px solid #991b1b; }
-
-  .modal { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.85); z-index: 1000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(5px); }
-  .modal.show { display: flex; }
-  .modal-card { background: #141824; border: 1px solid var(--border-color); border-radius: 12px; width: 100%; max-width: 960px; max-height: 85vh; display: flex; flex-direction: column; padding: 24px; }
-  .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 16px; }
-  .modal-title { color: var(--accent); font-size: 1.25rem; font-weight: 600; }
-  .tab-group { display: flex; gap: 8px; background: #0b0d14; padding: 4px; border-radius: 8px; border: 1px solid var(--border-color); }
-  .tab-btn { padding: 6px 14px; border: none; background: transparent; color: var(--text-secondary); cursor: pointer; border-radius: 6px; font-size: 0.85rem; font-weight: 600; }
-  .tab-btn.active { background: var(--accent); color: #000; }
-  .close-btn { background: transparent; border: none; color: var(--text-secondary); font-size: 1.6rem; cursor: pointer; }
-  .modal-body { overflow: auto; flex: 1; text-align: left; min-height: 120px; position: relative; }
-  .modal-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 14px; margin-top: 14px; flex-wrap: wrap; gap: 10px; }
-  .stats-table { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
-  .stats-table th, .stats-table td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--border-color); }
-  .rank-tag { display: inline-block; width: 26px; height: 26px; line-height: 26px; text-align: center; border-radius: 50%; font-weight: 700; font-size: 0.85rem; background: #252e45; color: #fff; }
-  .rank-1 { background: #d4af37; color: #000; }
-  .rank-2 { background: #94a3b8; color: #000; }
-  .rank-3 { background: #b45309; color: #fff; }
-  .tree-container { display: flex; gap: 20px; padding: 10px 4px; min-width: max-content; }
-  .tree-round { min-width: 220px; display: flex; flex-direction: column; }
-  .tree-round-header { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 12px; text-align: center; padding-bottom: 6px; border-bottom: 1px solid var(--border-color); }
-  .tree-matches { display: flex; flex-direction: column; justify-content: space-around; flex: 1; gap: 12px; }
-  .match-node { background: #1a2030; border: 1px solid var(--border-color); border-radius: 6px; padding: 8px 10px; display: flex; flex-direction: column; gap: 4px; }
-  .node-item { font-size: 0.85rem; padding: 4px 6px; border-radius: 4px; color: #64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .node-item.winner { color: #f8fafc; background: rgba(212, 175, 55, 0.15); font-weight: 600; border-left: 3px solid var(--accent); }
-  .loading-spin {
-    display: inline-block; width: 16px; height: 16px; border: 2px solid var(--border-color);
-    border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin-right: 6px; vertical-align: middle;
-  }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .sync-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
-  .sync-ok { background: #22c55e; }
-  .sync-err { background: #ef4444; }
-  .warn-icon { font-size: 2.6rem; margin-bottom: 0.8rem; }
-  .warn-text { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.8; text-align: left; }
-  .warn-text b { color: var(--accent); }
-  .export-disabled-tip { font-size: 0.85rem; color: var(--text-secondary); background: #1a2030; padding: 8px 14px; border-radius: 6px; border: 1px solid var(--border-color); }
-  @media (max-width: 640px) { .arena { flex-direction: column; } .vs-badge { display: none; } }
-</style>
+<link rel="stylesheet" href="./styles.css">
 </head>
 <body>
 
@@ -109,14 +17,14 @@
 <div class="toolbar">
   <label for="vol-select" style="color: var(--text-secondary); font-size: 0.95rem;">决选范围：</label>
   <select id="vol-select" class="vol-select" onchange="onVolChange()">
-    <option value="1">第一卷 (13章)</option>
-    <option value="2">第二卷 (21章)</option>
-    <option value="3">第三卷 (32章)</option>
-    <option value="4">第四卷 (42章)</option>
-    <option value="5">第五卷 (51章)</option>
-    <option value="6">第六卷 (63章)</option>
-    <option value="7">第七卷 (70章)</option>
-    <option value="all">全卷(共266章)</option>
+    <option value="1">第一卷</option>
+    <option value="2">第二卷</option>
+    <option value="3">第三卷</option>
+    <option value="4">第四卷</option>
+    <option value="5">第五卷</option>
+    <option value="6">第六卷</option>
+    <option value="7">第七卷</option>
+    <option value="all">全卷</option>
   </select>
   <button class="btn btn-secondary" onclick="openStatsModal()">查看全网天梯排行榜</button>
 </div>
@@ -152,8 +60,8 @@
   <div class="modal-body" style="text-align: center;">
     <div class="warn-icon">🏆</div>
     <p class="warn-text">
-      你即将挑战 <b>全卷章名（共266章）</b>，这是最硬核的决选模式：<br><br>
-      · 需要经过约 <b>9 轮</b>连续两两对决才能决出最终冠军<br>
+      你即将挑战 <b>全卷章名</b>，这是最硬核的决选模式：<br><br>
+      · 需要经过多轮连续两两对决才能决出最终冠军<br>
       · 由于轮次与节点数量过多，<b>完成后将不提供"路线图高清导出"功能</b>，仅支持在线查看<br>
       · 建议预留充足时间，耐心完成整个决选流程
     </p>
@@ -223,6 +131,68 @@ try {
   supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 } catch (e) {
   console.error('Supabase 初始化失败', e);
+}
+
+// === 所属卷映射配置（卷主题名 + 配色）===
+const VOLUME_NAMES = {
+  "1": "星云遥梦之始",
+  "2": "千门万户之都",
+  "3": "群虫众豸之母",
+  "4": "颠倒错杂之歌",
+  "5": "永生不败之光",
+  "6": "至瑰极宏之愿",
+  "7": "朝来暮去之雨"
+};
+const VOLUME_COLORS = {
+  "1": "#e74c3c",
+  "2": "#e67e22",
+  "3": "#f1c40f",
+  "4": "#2ecc71",
+  "5": "#1abc9c",
+  "6": "#3498db",
+  "7": "#9b59b6"
+};
+
+function buildChapterVolumeMap() {
+  const map = {};
+  if (!window.CHAPTERS_BY_VOL) return map;
+  for (let i = 1; i <= 7; i++) {
+    const list = window.CHAPTERS_BY_VOL[String(i)] || [];
+    list.forEach(name => { map[name] = String(i); });
+  }
+  return map;
+}
+const chapterVolumeMap = buildChapterVolumeMap();
+
+// 生成"卷名 + 数字角标"的标签HTML
+function renderVolTag(chapterName) {
+  const volKey = chapterVolumeMap[chapterName];
+  if (!volKey) return `<span style="color:var(--text-secondary); font-size:12px;">未知</span>`;
+  const color = VOLUME_COLORS[volKey] || '#888';
+  const name = VOLUME_NAMES[volKey] || '未知';
+  return `<span class="vol-tag" style="background:${color};">${name}<span class="vol-badge" style="color:${color};">${volKey}</span></span>`;
+}
+
+// 根据chapters.js的真实数据，自动计算并填充每卷的章节数标签（避免手写数字跟实际不同步）
+function updateVolumeOptionLabels() {
+  if (!window.CHAPTERS_BY_VOL) return;
+  const select = document.getElementById('vol-select');
+  const cnNums = ['一', '二', '三', '四', '五', '六', '七'];
+  let totalCount = 0;
+
+  for (let i = 1; i <= 7; i++) {
+    const list = window.CHAPTERS_BY_VOL[String(i)] || [];
+    totalCount += list.length;
+    const option = select.querySelector(`option[value="${i}"]`);
+    if (option) {
+      option.innerText = `第${cnNums[i - 1]}卷 (${list.length}章)`;
+    }
+  }
+
+  const allOption = select.querySelector('option[value="all"]');
+  if (allOption) {
+    allOption.innerText = `全卷(共${totalCount}章)`;
+  }
 }
 
 let currentRoundCandidates = [];
@@ -347,7 +317,7 @@ async function pickWinner(index) {
   currentMatchIndex += 2;
   renderMatch();
 
-  // 后台异步写入云端（原子自增，不会丢数据）
+  // 后台异步写入云端（原子操作：自增胜负场次 + 更新ELO分数）
   if (supabaseClient) {
     supabaseClient.rpc('increment_match', {
       winner_title: winner,
@@ -413,7 +383,11 @@ async function fetchCloudStats() {
     statsStore = { champions: {}, matches: {} };
     (data || []).forEach(row => {
       statsStore.champions[row.title] = row.champion_count || 0;
-      statsStore.matches[row.title] = { win: row.win_count || 0, total: row.total_count || 0 };
+      statsStore.matches[row.title] = {
+        win: row.win_count || 0,
+        total: row.total_count || 0,
+        elo: row.elo_score || 1500
+      };
     });
 
     isCloudConnected = true;
@@ -444,35 +418,38 @@ function renderStatsTable() {
   tbody.innerHTML = '';
 
   if (currentTab === 'champion') {
-    thead.innerHTML = `<tr><th style="width: 70px;">排名</th><th>章节名</th><th style="width: 130px; text-align: right;">夺冠总次数</th></tr>`;
+    thead.innerHTML = `<tr><th style="width: 70px;">排名</th><th>章节名</th><th style="width: 150px;">所属卷</th><th style="width: 130px; text-align: right;">夺冠总次数</th></tr>`;
     const entries = Object.entries(statsStore.champions || {}).filter(([_, v]) => v > 0);
     if (entries.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color: var(--text-secondary); padding: 24px;">暂无夺冠数据，完成决选并点击同步即可上榜！</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color: var(--text-secondary); padding: 24px;">暂无夺冠数据，完成决选并点击同步即可上榜！</td></tr>`;
       return;
     }
     entries.sort((a, b) => b[1] - a[1]);
     entries.forEach(([title, count], idx) => {
       const tr = document.createElement('tr');
       const rankClass = idx === 0 ? 'rank-1' : idx === 1 ? 'rank-2' : idx === 2 ? 'rank-3' : '';
-      tr.innerHTML = `<td><span class="rank-tag ${rankClass}">${idx + 1}</span></td><td style="color:#fff;">${title}</td><td style="color:var(--accent); font-weight:700; text-align:right;">${count} 次</td>`;
+      tr.innerHTML = `<td><span class="rank-tag ${rankClass}">${idx + 1}</span></td><td style="color:#fff;">${title}</td><td>${renderVolTag(title)}</td><td style="color:var(--accent); font-weight:700; text-align:right;">${count} 次</td>`;
       tbody.appendChild(tr);
     });
   } else {
-    thead.innerHTML = `<tr><th style="width: 70px;">排名</th><th>章节名</th><th style="width: 100px; text-align: center;">胜/负</th><th style="width: 90px; text-align: center;">胜率</th><th style="width: 100px; text-align: right;">积分</th></tr>`;
+    // 喜爱度积分榜：基于ELO动态评分系统，由云端数据库实时计算维护
+    thead.innerHTML = `<tr><th style="width: 70px;">排名</th><th>章节名</th><th style="width: 150px;">所属卷</th><th style="width: 100px; text-align: center;">胜/负</th><th style="width: 90px; text-align: center;">胜率</th><th style="width: 110px; text-align: right;">ELO积分</th></tr>`;
     const entries = Object.entries(statsStore.matches || {});
     if (entries.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color: var(--text-secondary); padding: 24px;">暂无对决数据，完成两两对决即可累加积分！</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; color: var(--text-secondary); padding: 24px;">暂无对决数据，完成两两对决即可累加ELO积分！</td></tr>`;
       return;
     }
     const list = entries.map(([title, st]) => {
       const rate = st.total > 0 ? (st.win / st.total) : 0;
-      return { title, win: st.win, loss: st.total - st.win, rate: (rate * 100).toFixed(1), score: Math.round(st.win * 10 + rate * 100) };
+      return { title, win: st.win, loss: st.total - st.win, rate: (rate * 100).toFixed(1), elo: st.elo };
     });
-    list.sort((a, b) => b.score - a.score || b.win - a.win);
+    // 按ELO降序排序，ELO是全局统一分数，天然兼容不同卷之间的基数差异
+    list.sort((a, b) => b.elo - a.elo);
     list.forEach((item, idx) => {
       const tr = document.createElement('tr');
       const rankClass = idx === 0 ? 'rank-1' : idx === 1 ? 'rank-2' : idx === 2 ? 'rank-3' : '';
-      tr.innerHTML = `<td><span class="rank-tag ${rankClass}">${idx + 1}</span></td><td style="color:#fff;">${item.title}</td><td style="color:var(--text-secondary); font-size:0.85rem; text-align:center;">${item.win}胜/${item.loss}负</td><td style="color:#e2e8f0; text-align:center;">${item.rate}%</td><td style="color:var(--accent); font-weight:700; text-align:right;">${item.score} pt</td>`;
+      const eloColorClass = item.elo >= 1600 ? 'elo-up' : 'elo-mid';
+      tr.innerHTML = `<td><span class="rank-tag ${rankClass}">${idx + 1}</span></td><td style="color:#fff;">${item.title}</td><td>${renderVolTag(item.title)}</td><td style="color:var(--text-secondary); font-size:0.85rem; text-align:center;">${item.win}胜/${item.loss}负</td><td style="color:#e2e8f0; text-align:center;">${item.rate}%</td><td class="elo-badge ${eloColorClass}" style="text-align:right;">${item.elo}</td>`;
       tbody.appendChild(tr);
     });
   }
@@ -561,7 +538,10 @@ function exportTreeAsImage() {
   link.click();
 }
 
-window.onload = onVolChange;
+window.onload = function() {
+  updateVolumeOptionLabels();
+  onVolChange();
+};
 </script>
 </body>
 </html>
