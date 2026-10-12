@@ -412,7 +412,7 @@
 </div>
 
 <script>
-const NAMESPACEv2 = 'daohou-stats-v2';
+const NAMESPACE = 'daohou-stats-v2';
 
 const CHAPTERS_BY_VOL = {
   "1": [
@@ -652,7 +652,7 @@ async function recordToGlobalLeaderboard() {
 
   try {
     const key = encodeURIComponent(finalChampionName).replace(/%/g, '_');
-    const res = await fetch(`https://api.counterapi.dev/v1/${NAMESPACEv2}/${key}/up`);
+    const res = await fetch(`https://api.counterapi.dev/v1/${NAMESPACE}/${key}/up`);
     if (res.ok) {
       const data = await res.json();
       statusTip.innerText = `计票成功！《${finalChampionName}》夺冠总场次已达 ${data.count} 次`;
