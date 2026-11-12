@@ -791,3 +791,23 @@ h1 {
   .arena { flex-direction: column; gap: 16px; } 
   .vs-badge { display: none; } 
 }
+
+/* 修复同步全网按钮：亮青色底 + 纯黑高对比度文字 */
+.btn-primary,
+#syncBtn,
+.winner-box .btn:last-child {
+  background: var(--accent) !important;
+  color: #03060a !important; /* 深黑工程底色，对比极高 */
+  font-weight: 700 !important;
+  border: 1px solid var(--accent) !important;
+  box-shadow: 0 0 15px rgba(0, 242, 254, 0.3) !important;
+}
+
+.btn-primary:hover,
+#syncBtn:hover,
+.winner-box .btn:last-child:hover {
+  background: #33f5fe !important;
+  color: #000000 !important;
+  box-shadow: 0 0 25px rgba(0, 242, 254, 0.6) !important;
+}
+
